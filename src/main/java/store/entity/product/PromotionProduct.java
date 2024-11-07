@@ -1,35 +1,13 @@
 package store.entity.product;
 
-public class PromotionProduct implements Product {
+import store.entity.Promotion;
 
+public class PromotionProduct extends AbstractProduct {
+    private final Promotion promotion;
 
-    @Override
-    public String getName() {
-        return "";
+    public PromotionProduct(String name, int price, int quantity, Promotion promotion) {
+        super(name, price, quantity);
+        this.promotion = promotion;
     }
 
-    @Override
-    public int getPrice() {
-        return 0;
-    }
-
-    @Override
-    public int getQuantity() {
-        return 0;
-    }
-
-    @Override
-    public void buy(int buyQuantity) {
-
-    }
-
-    @Override
-    public boolean hasSufficientStock(int checkQuantity) {
-        return false;
-    }
-
-    @Override
-    public boolean isSameName(Product product) {
-        return false;
-    }
 }
