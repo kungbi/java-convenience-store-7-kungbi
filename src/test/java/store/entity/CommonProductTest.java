@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import store.exception.ProductException;
 
-public class ProductTest {
+public class CommonProductTest {
 
     @Nested
     class 상품_생성_테스트 {
@@ -20,12 +20,12 @@ public class ProductTest {
             int quantity = 10;
 
             // when
-            Product product = new Product(name, price, quantity, null);
+            CommonProduct commonProduct = new CommonProduct(name, price, quantity);
 
             // then
-            assertEquals(name, product.getName());
-            assertEquals(price, product.getPrice());
-            assertEquals(quantity, product.getQuantity());
+            assertEquals(name, commonProduct.getName());
+            assertEquals(price, commonProduct.getPrice());
+            assertEquals(quantity, commonProduct.getQuantity());
         }
 
         @Test
@@ -37,7 +37,7 @@ public class ProductTest {
 
             // when & then
             ProductException exception = Assertions.assertThrows(ProductException.class,
-                    () -> new Product(name, price, quantity, null));
+                    () -> new CommonProduct(name, price, quantity));
 
             assertEquals("상품 이름이 NULL 입니다.", exception.getMessage());
         }
@@ -51,7 +51,7 @@ public class ProductTest {
 
             // when & then
             ProductException exception = Assertions.assertThrows(ProductException.class,
-                    () -> new Product(name, price, quantity, null));
+                    () -> new CommonProduct(name, price, quantity));
 
             assertEquals("상품 이름이 빈 문자열입니다.", exception.getMessage());
         }
@@ -65,7 +65,7 @@ public class ProductTest {
 
             // when & then
             ProductException exception = Assertions.assertThrows(ProductException.class,
-                    () -> new Product(name, price, quantity, null));
+                    () -> new CommonProduct(name, price, quantity));
 
             assertEquals("상품 이름이 50자를 초과했습니다.", exception.getMessage());
         }
@@ -79,7 +79,7 @@ public class ProductTest {
 
             // when & then
             ProductException exception = Assertions.assertThrows(ProductException.class,
-                    () -> new Product(name, price, quantity, null));
+                    () -> new CommonProduct(name, price, quantity));
 
             assertEquals("상품 가격이 0원 이하입니다.", exception.getMessage());
         }
@@ -93,10 +93,12 @@ public class ProductTest {
 
             // when & then
             ProductException exception = Assertions.assertThrows(ProductException.class,
-                    () -> new Product(name, price, quantity, null));
+                    () -> new CommonProduct(name, price, quantity));
 
             assertEquals("상품 수량이 0개 미만입니다.", exception.getMessage());
         }
+
+
     }
 
     @Nested
@@ -107,13 +109,13 @@ public class ProductTest {
             String name = "콜라";
             int price = 1000;
             int quantity = 10;
-            Product product = new Product(name, price, quantity, null);
+            CommonProduct commonProduct = new CommonProduct(name, price, quantity);
 
             // when
-            product.buy(5);
+            commonProduct.buy(5);
 
             // then
-            assertEquals(5, product.getQuantity());
+            assertEquals(5, commonProduct.getQuantity());
         }
 
         @Test
@@ -122,11 +124,10 @@ public class ProductTest {
             String name = "콜라";
             int price = 1000;
             int quantity = 10;
-            Product product = new Product(name, price, quantity, null);
+            CommonProduct commonProduct = new CommonProduct(name, price, quantity);
 
             // when & then
-            ProductException exception = Assertions.assertThrows(ProductException.class,
-                    () -> product.buy(11));
+            ProductException exception = Assertions.assertThrows(ProductException.class, () -> commonProduct.buy(11));
 
             assertEquals("상품 재고가 부족합니다.", exception.getMessage());
         }
@@ -137,28 +138,26 @@ public class ProductTest {
             String name = "콜라";
             int price = 1000;
             int quantity = 10;
-            Product product = new Product(name, price, quantity, null);
+            CommonProduct commonProduct = new CommonProduct(name, price, quantity);
 
             // when
-            boolean isAvailable = product.hasSufficientStock(5);
+            boolean isAvailable = commonProduct.hasSufficientStock(5);
 
             // then
             assertEquals(true, isAvailable);
         }
 
-
         @Test
         void 정상__상품_이름_비교() {
             // given
-            Product lowerCaseProduct = new Product("coke", 1000, 10, null);
-            Product upperCaseProduct = new Product("COKE", 1000, 10, null);
+            CommonProduct lowerCaseCommonProduct = new CommonProduct("coke", 1000, 10);
+            CommonProduct upperCaseCommonProduct = new CommonProduct("COKE", 1000, 10);
 
             // when
-            boolean isSameName = lowerCaseProduct.isSameName(upperCaseProduct);
+            boolean isSameName = lowerCaseCommonProduct.isSameName(upperCaseCommonProduct);
 
             // then
             assertEquals(true, isSameName);
         }
-
     }
 }
