@@ -1,15 +1,45 @@
 package store.entity.product;
 
-public interface Product {
-    String getName();
+import store.validator.ProductValidator;
 
-    int getPrice();
+public abstract class Product {
+    private final String name;
+    private final int price;
+    private int quantity;
 
-    int getQuantity();
+    public Product(String name, int price, int quantity) {
+        ProductValidator.validate(name, price, quantity);
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
 
-    void buy(int buyQuantity);
+    public String getName() {
+        return this.name;
+    }
 
-    boolean hasSufficientStock(int checkQuantity);
+    public int getPrice() {
+        return this.price;
+    }
 
-    boolean isSameName(Product product);
+    public int getQuantity() {
+        return this.quantity;
+    }
+
+    public boolean isSameName(Product product) {
+        return this.name.equalsIgnoreCase(product.getName());
+    }
+
+    public void buy(int quantity) {
+        if (!hasSufficientStock(quantity)) {
+            throw new IllegalArgumentException("재고가 부족합니다.");
+        }
+        this.quantity -= quantity;
+    }
+
+    public boolean hasSufficientStock(int checkQuantity) {
+        return this.quantity >= checkQuantity;
+    }
+
+    public abstract int calculatePrice(int quantity);
 }
