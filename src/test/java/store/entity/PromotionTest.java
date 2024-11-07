@@ -174,10 +174,40 @@ class PromotionTest {
 
     @Nested
     class 프로모션_기능_테스트 {
-        /**
-         * 1. 현재 적용 가능한 프로모션인지 확인
-         * 2. 프로모션 적용한 가격 계산
-         * 3. 프로모션을 받기 위한 더 필요한 상품 개수 확인
-         */
+
+        @Test
+        void 정상__현재_적용_가능한_프로모션인지_확인_기능() {
+            // given
+            String name = "프로모션1";
+            int buyQuantity = 2;
+            int freeQuantity = 1;
+            LocalDateTime startDate = LocalDateTime.now().minusDays(1);
+            LocalDateTime endDate = LocalDateTime.now().plusDays(7);
+            Promotion promotion = new Promotion(name, buyQuantity, freeQuantity, startDate, endDate);
+
+            // when
+            boolean isAvailable = promotion.isAvailable();
+
+            // then
+            assertEquals(true, isAvailable);
+        }
+
+        @Test
+        void 정상__증정상품_수를_계산하는_기능() {
+            // given
+            String name = "프로모션1";
+            int buyQuantity = 2;
+            int freeQuantity = 1;
+            LocalDateTime startDate = LocalDateTime.now().minusDays(1);
+            LocalDateTime endDate = LocalDateTime.now().plusDays(7);
+            Promotion promotion = new Promotion(name, buyQuantity, freeQuantity, startDate, endDate);
+
+            // when
+            int calculatedFreeQuantity = promotion.calculateFreeQuantity(3);
+
+            // then
+            assertEquals(1, calculatedFreeQuantity);
+        }
     }
+
 }

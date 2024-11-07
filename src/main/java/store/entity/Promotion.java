@@ -51,7 +51,20 @@ public class Promotion {
         return buyQuantity;
     }
 
+    public int calculateFreeQuantity(int quantity) {
+        return quantity / (buyQuantity + freeQuantity) * freeQuantity;
+    }
+
     public int getFreeQuantity() {
         return freeQuantity;
+    }
+
+    public boolean isEqualToRequiredBuyQuantity(int quantity) {
+        return quantity >= buyQuantity;
+    }
+
+    public boolean isAvailable() {
+        LocalDateTime now = LocalDateTime.now();
+        return now.isAfter(startDate) && now.isBefore(endDate);
     }
 }
