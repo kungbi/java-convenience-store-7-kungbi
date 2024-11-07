@@ -59,10 +59,6 @@ public class Promotion {
         return freeQuantity;
     }
 
-    public boolean isEqualToRequiredBuyQuantity(int quantity) {
-        return quantity >= buyQuantity;
-    }
-
     public boolean isAvailable() {
         LocalDateTime now = LocalDateTime.now();
         return now.isAfter(startDate) && now.isBefore(endDate);

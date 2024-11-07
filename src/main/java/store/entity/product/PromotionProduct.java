@@ -1,6 +1,8 @@
 package store.entity.product;
 
 import store.entity.Promotion;
+import store.exception.ProductException;
+import store.exception.message.ProductExceptionMessage;
 
 public class PromotionProduct extends Product {
     private final Promotion promotion;
@@ -12,7 +14,15 @@ public class PromotionProduct extends Product {
 
     @Override
     public int calculatePrice(int quantity) {
-        return 0;
+        if (quantity < 0) {
+            throw new ProductException(ProductExceptionMessage.NEGATIVE_QUANTITY);
+        }
+        if (!promotion.isAvailable()) {
+            return getPrice() * quantity;
+        }
+
+        int freeQuantity = promotion.calculateFreeQuantity(quantity);
+        return getPrice() * (quantity - freeQuantity);
     }
 
     @Override
