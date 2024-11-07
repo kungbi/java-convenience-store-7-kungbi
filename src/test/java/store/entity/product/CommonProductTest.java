@@ -29,7 +29,7 @@ public class CommonProductTest {
         }
 
         @Test
-        void 실패__상품_이름이_null인_경우() {
+        void 예외__상품_이름이_null인_경우() {
             // given
             String name = null;
             int price = 1000;
@@ -43,7 +43,7 @@ public class CommonProductTest {
         }
 
         @Test
-        void 실패__상품_이름이_빈문자열인_경우() {
+        void 예외__상품_이름이_빈문자열인_경우() {
             // given
             String name = "";
             int price = 1000;
@@ -57,7 +57,7 @@ public class CommonProductTest {
         }
 
         @Test
-        void 실패__상품_이름이_50자_초과인_경우() {
+        void 예외__상품_이름이_50자_초과인_경우() {
             // given
             String name = "123456789012345678901234567890123456789012345678901"; // 51 characters
             int price = 1000;
@@ -71,7 +71,7 @@ public class CommonProductTest {
         }
 
         @Test
-        void 실패__상품_가격이_0이하일_경우() {
+        void 예외__상품_가격이_0이하일_경우() {
             // given
             String name = "콜라";
             int price = 0;
@@ -85,7 +85,7 @@ public class CommonProductTest {
         }
 
         @Test
-        void 실패__상품_수량이_0보다_작은경우() {
+        void 예외__상품_수량이_0보다_작은경우() {
             // given
             String name = "콜라";
             int price = 1000;
@@ -119,7 +119,7 @@ public class CommonProductTest {
         }
 
         @Test
-        void 실패__상품_재고가_부족한_경우() {
+        void 예외__상품_재고가_부족한_경우() {
             // given
             String name = "콜라";
             int price = 1000;

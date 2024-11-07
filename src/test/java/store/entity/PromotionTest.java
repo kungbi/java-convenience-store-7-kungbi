@@ -32,7 +32,7 @@ class PromotionTest {
         }
 
         @Test
-        void 실패__프로모션_이름이_NULL_일_경우() {
+        void 예외__프로모션_이름이_NULL_일_경우() {
             // given
             String name = null;
             int buyQuantity = 2;
@@ -49,7 +49,7 @@ class PromotionTest {
         }
 
         @Test
-        void 실패__프로모션_이름이_빈_문자열_일_경우() {
+        void 예외__프로모션_이름이_빈_문자열_일_경우() {
             // given
             String name = "";
             int buyQuantity = 2;
@@ -66,7 +66,7 @@ class PromotionTest {
         }
 
         @Test
-        void 실패__프로모션_이름이_50자를_초과한_경우() {
+        void 예외__프로모션_이름이_50자를_초과한_경우() {
             // given
             String name = "123456789012345678901234567890123456789012345678901"; // 51 characters
             int buyQuantity = 2;
@@ -84,7 +84,7 @@ class PromotionTest {
         }
 
         @Test
-        void 실패__프로모션_시작_날짜에_NULL_값이_들어간_경우() {
+        void 예외__프로모션_시작_날짜에_NULL_값이_들어간_경우() {
             // given
             String name = "프로모션1";
             int buyQuantity = 2;
@@ -101,7 +101,7 @@ class PromotionTest {
         }
 
         @Test
-        void 실패__프로모션_종료_날짜에_NULL_값이_들어간_경우() {
+        void 예외__프로모션_종료_날짜에_NULL_값이_들어간_경우() {
             // given
             String name = "프로모션1";
             int buyQuantity = 2;
@@ -118,7 +118,7 @@ class PromotionTest {
         }
 
         @Test
-        void 실패__구매_개수가_1보다_작을_경우() {
+        void 예외__구매_개수가_1보다_작을_경우() {
             // given
             String name = "프로모션1";
             int buyQuantity = 0;
@@ -136,7 +136,7 @@ class PromotionTest {
 
 
         @Test
-        void 실패__증정_개수가_1보다_작을_경우() {
+        void 예외__증정_개수가_1보다_작을_경우() {
             // given
             String name = "프로모션1";
             int buyQuantity = 10;
@@ -153,7 +153,7 @@ class PromotionTest {
         }
 
         @Test
-        void 실패__프로모션_시작일은_종료일보다_이전이어야_한다() {
+        void 예외__프로모션_시작일은_종료일보다_이전이어야_한다() {
             // given
             String name = "프로모션1";
             int buyQuantity = 2;
