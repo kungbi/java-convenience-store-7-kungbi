@@ -1,11 +1,10 @@
-package store.entity;
+package store.entity.product;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import store.entity.product.CommonProduct;
 import store.exception.ProductException;
 
 public class CommonProductTest {

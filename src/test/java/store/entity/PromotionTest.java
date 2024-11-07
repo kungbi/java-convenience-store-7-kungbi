@@ -1,4 +1,4 @@
-package store;
+package store.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import store.entity.Promotion;
 import store.exception.PromotionException;
 import store.exception.message.PromotionExceptionMessage;
 
