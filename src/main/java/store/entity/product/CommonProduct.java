@@ -1,4 +1,4 @@
-package store.entity;
+package store.entity.product;
 
 import store.exception.ProductException;
 import store.exception.message.ProductExceptionMessage;

@@ -1,4 +1,4 @@
-package store.entity;
+package store.entity.product;
 
 public interface Product {
     String getName();
