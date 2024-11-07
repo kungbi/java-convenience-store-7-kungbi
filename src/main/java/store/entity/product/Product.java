@@ -42,4 +42,8 @@ public abstract class Product {
     }
 
     public abstract int calculatePrice(int quantity);
+
+    public abstract ProductType getType();
+
+    public abstract Product clone();
 }

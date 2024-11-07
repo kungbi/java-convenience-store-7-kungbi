@@ -14,4 +14,14 @@ public class PromotionProduct extends Product {
     public int calculatePrice(int quantity) {
         return 0;
     }
+
+    @Override
+    public ProductType getType() {
+        return ProductType.PROMOTION;
+    }
+
+    @Override
+    public Product clone() {
+        return new PromotionProduct(getName(), getPrice(), getQuantity(), promotion);
+    }
 }

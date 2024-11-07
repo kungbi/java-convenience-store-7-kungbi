@@ -10,4 +10,14 @@ public class CommonProduct extends Product {
     public int calculatePrice(int quantity) {
         return getPrice() * quantity;
     }
+
+    @Override
+    public ProductType getType() {
+        return ProductType.COMMON;
+    }
+
+    @Override
+    public Product clone() {
+        return new CommonProduct(getName(), getPrice(), getQuantity());
+    }
 }
