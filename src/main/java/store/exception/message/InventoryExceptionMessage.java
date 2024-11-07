@@ -1,6 +1,6 @@
 package store.exception.message;
 
-public enum ProductInventoryExceptionMessage implements ExceptionMessage {
+public enum InventoryExceptionMessage implements ExceptionMessage {
     NULL_PRODUCT("상품 객체가 NULL 입니다."),
     NULL_NAME("상품의 이름이 NULL 입니다."),
     NULL_TYPE("상품 타입이 NULL 입니다."),
@@ -9,7 +9,7 @@ public enum ProductInventoryExceptionMessage implements ExceptionMessage {
 
     private final String message;
 
-    ProductInventoryExceptionMessage(String message) {
+    InventoryExceptionMessage(String message) {
         this.message = message;
     }
 

@@ -1,5 +1,7 @@
 package store.entity.product;
 
+import store.exception.ProductException;
+import store.exception.message.ProductExceptionMessage;
 import store.validator.ProductValidator;
 
 public abstract class Product {
@@ -32,7 +34,7 @@ public abstract class Product {
 
     public void buy(int quantity) {
         if (!hasSufficientStock(quantity)) {
-            throw new IllegalArgumentException("재고가 부족합니다.");
+            throw new ProductException(ProductExceptionMessage.INSUFFICIENT_STOCK);
         }
         this.quantity -= quantity;
     }

@@ -5,44 +5,44 @@ import java.util.Map;
 import java.util.TreeMap;
 import store.entity.product.Product;
 import store.entity.product.ProductType;
-import store.exception.ProductInventoryException;
-import store.exception.message.ProductInventoryExceptionMessage;
+import store.exception.InventoryException;
+import store.exception.message.InventoryExceptionMessage;
 
-public class ProductInventory {
+public class Inventory {
     private final Map<String, Map<ProductType, Product>> inventory;
 
-    public ProductInventory() {
+    public Inventory() {
         this.inventory = new TreeMap<>();
     }
 
     public void addProduct(Product product) {
         if (product == null) {
-            throw new ProductInventoryException(ProductInventoryExceptionMessage.NULL_PRODUCT,
+            throw new InventoryException(InventoryExceptionMessage.NULL_PRODUCT,
                     new NullPointerException());
         }
         Map<ProductType, Product> products = inventory.computeIfAbsent(product.getName(), k -> new HashMap<>());
         if (products.containsKey(product.getType())) {
-            throw new ProductInventoryException(ProductInventoryExceptionMessage.DUPLICATE_PRODUCT);
+            throw new InventoryException(InventoryExceptionMessage.DUPLICATE_PRODUCT);
         }
         products.put(product.getType(), product.clone());
     }
 
     public Product getProduct(String name, ProductType type) {
         if (name == null) {
-            throw new ProductInventoryException(ProductInventoryExceptionMessage.NULL_NAME);
+            throw new InventoryException(InventoryExceptionMessage.NULL_NAME);
         }
         if (type == null) {
-            throw new ProductInventoryException(ProductInventoryExceptionMessage.NULL_TYPE);
+            throw new InventoryException(InventoryExceptionMessage.NULL_TYPE);
         }
 
         Map<ProductType, Product> productsByType = inventory.get(name);
         if (productsByType == null) {
-            throw new ProductInventoryException(ProductInventoryExceptionMessage.NOT_EXIST_PRODUCT);
+            throw new InventoryException(InventoryExceptionMessage.NOT_EXIST_PRODUCT);
         }
 
         Product product = productsByType.get(type);
         if (product == null) {
-            throw new ProductInventoryException(ProductInventoryExceptionMessage.NOT_EXIST_PRODUCT);
+            throw new InventoryException(InventoryExceptionMessage.NOT_EXIST_PRODUCT);
         }
         return product;
     }
