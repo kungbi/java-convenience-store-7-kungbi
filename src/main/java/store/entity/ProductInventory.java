@@ -28,6 +28,13 @@ public class ProductInventory {
     }
 
     public Product getProduct(String name, ProductType type) {
+        if (name == null) {
+            throw new ProductInventoryException(ProductInventoryExceptionMessage.NULL_NAME);
+        }
+        if (type == null) {
+            throw new ProductInventoryException(ProductInventoryExceptionMessage.NULL_TYPE);
+        }
+
         Map<ProductType, Product> productsByType = inventory.get(name);
         if (productsByType == null) {
             throw new ProductInventoryException(ProductInventoryExceptionMessage.NOT_EXIST_PRODUCT);

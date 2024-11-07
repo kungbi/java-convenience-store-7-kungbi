@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import store.entity.product.CommonProduct;
 import store.entity.product.Product;
+import store.entity.product.ProductType;
 import store.exception.ProductInventoryException;
 import store.exception.message.ProductInventoryExceptionMessage;
 
@@ -95,6 +96,48 @@ class ProductInventoryTest {
 
             // then
             assertEquals(10, foundProduct.getQuantity());
+        }
+
+        @Test
+        void 예외__상품_가져오기_이름이_NULL() {
+            // given
+            ProductInventory productInventory = new ProductInventory();
+            String productName = null;
+            ProductType productType = ProductType.COMMON;
+
+            // when & then
+            ProductInventoryException exception = assertThrows(ProductInventoryException.class,
+                    () -> productInventory.getProduct(productName, productType));
+
+            assertEquals(ProductInventoryExceptionMessage.NULL_NAME.getMessage(), exception.getMessage());
+        }
+
+        @Test
+        void 예외__상품_가져오기_TYPE이_NULL() {
+            // given
+            ProductInventory productInventory = new ProductInventory();
+            String productName = "콜라";
+            ProductType productType = null;
+
+            // when & then
+            ProductInventoryException exception = assertThrows(ProductInventoryException.class,
+                    () -> productInventory.getProduct(productName, productType));
+
+            assertEquals(ProductInventoryExceptionMessage.NULL_TYPE.getMessage(), exception.getMessage());
+        }
+
+        @Test
+        void 예외__없는_상품_조회() {
+            // given
+            ProductInventory productInventory = new ProductInventory();
+            Product product = new CommonProduct("콜라", 1000, 10);
+            productInventory.addProduct(product);
+
+            // when & then
+            ProductInventoryException exception = assertThrows(ProductInventoryException.class,
+                    () -> productInventory.getProduct("사이다", product.getType()));
+
+            assertEquals(ProductInventoryExceptionMessage.NOT_EXIST_PRODUCT.getMessage(), exception.getMessage());
         }
     }
 
