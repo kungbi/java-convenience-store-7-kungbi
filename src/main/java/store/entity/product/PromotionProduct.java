@@ -10,6 +10,10 @@ public class PromotionProduct extends Product {
         this.promotion = promotion;
     }
 
+    public Promotion getPromotion() {
+        return promotion;
+    }
+
     public boolean isAvailable() {
         return promotion.isAvailable();
     }

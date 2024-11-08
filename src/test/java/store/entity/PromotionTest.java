@@ -192,22 +192,6 @@ class PromotionTest {
             assertEquals(true, isAvailable);
         }
 
-        @Test
-        void 정상__증정상품_수를_계산하는_기능() {
-            // given
-            String name = "프로모션1";
-            int buyQuantity = 2;
-            int freeQuantity = 1;
-            LocalDateTime startDate = LocalDateTime.now().minusDays(1);
-            LocalDateTime endDate = LocalDateTime.now().plusDays(7);
-            Promotion promotion = new Promotion(name, buyQuantity, freeQuantity, startDate, endDate);
-
-            // when
-            int calculatedFreeQuantity = promotion.calculateFreeQuantity(3);
-
-            // then
-            assertEquals(1, calculatedFreeQuantity);
-        }
     }
 
 }

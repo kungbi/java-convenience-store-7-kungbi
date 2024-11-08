@@ -1,7 +1,7 @@
 package store.service;
 
 import store.dto.PurchaseItemDto;
-import store.dto.PurchaseRequestDto;
+import store.dto.PurchaseItemsDto;
 import store.entity.ProductStock;
 import store.entity.product.Product;
 import store.entity.product.ProductType;
@@ -14,8 +14,8 @@ public class ProductStockService {
         this.productStock = productStock;
     }
 
-    public boolean areProductsAvailable(PurchaseRequestDto purchaseRequestDto) {
-        for (PurchaseItemDto product : purchaseRequestDto.products()) {
+    public boolean areProductsAvailable(PurchaseItemsDto purchaseItemsDto) {
+        for (PurchaseItemDto product : purchaseItemsDto.products()) {
             if (!isProductAvailable(product)) {
                 return false;
             }

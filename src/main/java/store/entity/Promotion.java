@@ -51,8 +51,12 @@ public class Promotion {
         return buyQuantity;
     }
 
-    public int calculateFreeQuantity(int quantity) {
-        return quantity / (buyQuantity + freeQuantity) * freeQuantity;
+    public int getAdditionalFreeItemCount(int quantity) {
+        int remain = quantity % (buyQuantity + freeQuantity);
+        if (remain == buyQuantity) {
+            return freeQuantity;
+        }
+        return 0;
     }
 
     public int getFreeQuantity() {
