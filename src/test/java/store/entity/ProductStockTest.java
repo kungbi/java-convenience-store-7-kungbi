@@ -3,10 +3,13 @@ package store.entity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import store.entity.product.CommonProduct;
 import store.entity.product.Product;
+import store.entity.product.ProductType;
+import store.entity.product.PromotionProduct;
 import store.exception.ProductStockException;
 import store.exception.message.ProductStockExceptionMessage;
 
@@ -34,10 +37,53 @@ class ProductStockTest {
             assertEquals(8, productStock.getProductQuantity(orange.getName(), orange.getType()));
         }
 
+        @Test
+        void 예외__중복된_상품_추가() {
+            // given
+            ProductStock productStock = new ProductStock();
+            Product coke = new CommonProduct("콜라", 1000);
+            productStock.addProducts(coke, 5);
+
+            // when
+            Product coke_same = new CommonProduct("콜라", 4000);
+            ProductStockException exception = assertThrows(ProductStockException.class,
+                    () -> productStock.addProducts(coke_same, 3));
+
+            assertEquals(ProductStockExceptionMessage.DUPLICATE_PRODUCT.getMessage(), exception.getMessage());
+        }
+
+        @Test
+        void 정상__이름은_같지만_다른_타입() {
+            // given
+            ProductStock productStock = new ProductStock();
+            Product coke = new CommonProduct("콜라", 1000);
+            productStock.addProducts(coke, 5);
+
+            // when & then
+            Product coke_same = new PromotionProduct("콜라", 4000, new Promotion(
+                    "프로모션", 2, 1, LocalDateTime.now(), LocalDateTime.now().plusDays(7)
+            ));
+            productStock.addProducts(coke_same, 3);
+            // 에러발생 X
+        }
+
+        @Test
+        void 예외__상품이_null() {
+            // given
+            ProductStock productStock = new ProductStock();
+
+            // when
+            ProductStockException exception = assertThrows(ProductStockException.class,
+                    () -> productStock.addProducts(null, 5));
+
+            // then
+            assertEquals(ProductStockExceptionMessage.NULL_PRODUCT.getMessage(), exception.getMessage());
+        }
     }
 
     @Nested
     class 재고_확인_테스트 {
+
         @Test
         void 예외__없는_상품_확인() {
             // given
@@ -55,6 +101,33 @@ class ProductStockTest {
 
             // then
             assertEquals(ProductStockExceptionMessage.NOT_EXIST_PRODUCT.getMessage(), exception.getMessage());
+        }
+
+        @Test
+        void 예외__상품_이름이_NULL() {
+            // given
+            ProductStock productStock = new ProductStock();
+
+            // when
+            ProductStockException exception = assertThrows(ProductStockException.class,
+                    () -> productStock.getProductQuantity(null, ProductType.COMMON));
+
+
+            // then
+            assertEquals(ProductStockExceptionMessage.NULL_NAME.getMessage(), exception.getMessage());
+        }
+
+        @Test
+        void 예외__상품_타입이_NULL() {
+            // given
+            ProductStock productStock = new ProductStock();
+
+            // when
+            ProductStockException exception = assertThrows(ProductStockException.class,
+                    () -> productStock.getProductQuantity("콜라", null));
+
+            // then
+            assertEquals(ProductStockExceptionMessage.NULL_TYPE.getMessage(), exception.getMessage());
         }
     }
 
@@ -101,6 +174,25 @@ class ProductStockTest {
 
             // then
             assertEquals(ProductStockExceptionMessage.INSUFFICIENT_STOCK.getMessage(), exception.getMessage());
+        }
+
+        @Test
+        void 예외__없는_상품_감소() {
+            // given
+            Product coke = new CommonProduct("콜라", 1000);
+            Product sprite = new CommonProduct("사이다", 1000);
+            Product orange = new CommonProduct("오랜지", 1000);
+            ProductStock productStock = new ProductStock();
+            productStock.addProducts(coke, 5);
+            productStock.addProducts(sprite, 3);
+            productStock.addProducts(orange, 8);
+
+            // when
+            ProductStockException exception = assertThrows(ProductStockException.class,
+                    () -> productStock.reduceProductQuantity("포도", coke.getType(), 6));
+
+            // then
+            assertEquals(ProductStockExceptionMessage.NOT_EXIST_PRODUCT.getMessage(), exception.getMessage());
         }
 
     }

@@ -1,6 +1,7 @@
 package store.entity;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import store.entity.product.Product;
 import store.entity.product.ProductType;
@@ -22,17 +23,53 @@ public class ProductStock {
             throw new ProductStockException(ProductStockExceptionMessage.NULL_PRODUCT,
                     new NullPointerException());
         }
-        Map<ProductType, Product> products = this.products.computeIfAbsent(product.getName(), k -> new HashMap<>());
-        if (products.containsKey(product.getType())) {
+
+        this.products.putIfAbsent(product.getName(), new HashMap<>());
+        if (this.products.get(product.getName()).containsKey(product.getType())) {
             throw new ProductStockException(ProductStockExceptionMessage.DUPLICATE_PRODUCT);
         }
-        products.put(product.getType(), product);
+        this.products.get(product.getName()).put(product.getType(), product);
         stocks.put(product.getUuid(), quantity);
     }
 
-    public int getProductQuantity(String name, ProductType type) {
+    public List<Product> getProducts() {
+        return products.values().stream()
+                .flatMap(map -> map.values().stream())
+                .toList();
+    }
+
+    public Map<ProductType, Product> getProducts(String name) {
         try {
-            Product product = products.get(name).get(type);
+            return products.get(name);
+        } catch (NullPointerException error) {
+            throw new ProductStockException(ProductStockExceptionMessage.NOT_EXIST_PRODUCT, error);
+        }
+    }
+
+    public Product getProduct(String name, ProductType type) {
+        if (name == null) {
+            throw new ProductStockException(ProductStockExceptionMessage.NULL_NAME);
+        }
+        if (type == null) {
+            throw new ProductStockException(ProductStockExceptionMessage.NULL_TYPE);
+        }
+        try {
+            return products.get(name).get(type);
+        } catch (NullPointerException error) {
+            throw new ProductStockException(ProductStockExceptionMessage.NOT_EXIST_PRODUCT, error);
+        }
+    }
+
+    public int getProductQuantity(String name, ProductType type) {
+        if (name == null) {
+            throw new ProductStockException(ProductStockExceptionMessage.NULL_NAME);
+        }
+        if (type == null) {
+            throw new ProductStockException(ProductStockExceptionMessage.NULL_TYPE);
+        }
+
+        Product product = getProduct(name, type);
+        try {
             return stocks.get(product.getUuid());
         } catch (NullPointerException error) {
             throw new ProductStockException(ProductStockExceptionMessage.NOT_EXIST_PRODUCT, error);
@@ -40,7 +77,17 @@ public class ProductStock {
     }
 
     public void reduceProductQuantity(String name, ProductType type, int quantity) {
-        Product product = products.get(name).get(type);
+        if (name == null) {
+            throw new ProductStockException(ProductStockExceptionMessage.NULL_NAME);
+        }
+        if (type == null) {
+            throw new ProductStockException(ProductStockExceptionMessage.NULL_TYPE);
+        }
+        if (quantity <= 0) {
+            throw new ProductStockException(ProductStockExceptionMessage.INVALID_QUANTITY);
+        }
+
+        Product product = getProduct(name, type);
         int currentQuantity = stocks.get(product.getUuid());
         if (currentQuantity < quantity) {
             throw new ProductStockException(ProductStockExceptionMessage.INSUFFICIENT_STOCK);
