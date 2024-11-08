@@ -1,5 +1,5 @@
 package store.entity.membership;
 
 public interface Membership {
-    public int applyDiscount(int originalPrice);
+    int applyDiscount(int originalPrice);
 }
