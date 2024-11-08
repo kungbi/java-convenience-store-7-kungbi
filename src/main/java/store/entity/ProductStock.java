@@ -18,7 +18,7 @@ public class ProductStock {
         this.stocks = new HashMap<>();
     }
 
-    public void addProducts(Product product, int quantity) {
+    public void addProduct(Product product, int quantity) {
         if (product == null) {
             throw new ProductStockException(ProductStockExceptionMessage.NULL_PRODUCT,
                     new NullPointerException());

@@ -27,9 +27,9 @@ class ProductStockTest {
             Product orange = new CommonProduct("오랜지", 1000);
 
             // when
-            productStock.addProducts(coke, 5);
-            productStock.addProducts(sprite, 3);
-            productStock.addProducts(orange, 8);
+            productStock.addProduct(coke, 5);
+            productStock.addProduct(sprite, 3);
+            productStock.addProduct(orange, 8);
 
             // then
             assertEquals(5, productStock.getProductQuantity(coke.getName(), coke.getType()));
@@ -42,12 +42,12 @@ class ProductStockTest {
             // given
             ProductStock productStock = new ProductStock();
             Product coke = new CommonProduct("콜라", 1000);
-            productStock.addProducts(coke, 5);
+            productStock.addProduct(coke, 5);
 
             // when
             Product coke_same = new CommonProduct("콜라", 4000);
             ProductStockException exception = assertThrows(ProductStockException.class,
-                    () -> productStock.addProducts(coke_same, 3));
+                    () -> productStock.addProduct(coke_same, 3));
 
             assertEquals(ProductStockExceptionMessage.DUPLICATE_PRODUCT.getMessage(), exception.getMessage());
         }
@@ -57,13 +57,13 @@ class ProductStockTest {
             // given
             ProductStock productStock = new ProductStock();
             Product coke = new CommonProduct("콜라", 1000);
-            productStock.addProducts(coke, 5);
+            productStock.addProduct(coke, 5);
 
             // when & then
             Product coke_same = new PromotionProduct("콜라", 4000, new Promotion(
                     "프로모션", 2, 1, LocalDateTime.now(), LocalDateTime.now().plusDays(7)
             ));
-            productStock.addProducts(coke_same, 3);
+            productStock.addProduct(coke_same, 3);
             // 에러발생 X
         }
 
@@ -74,7 +74,7 @@ class ProductStockTest {
 
             // when
             ProductStockException exception = assertThrows(ProductStockException.class,
-                    () -> productStock.addProducts(null, 5));
+                    () -> productStock.addProduct(null, 5));
 
             // then
             assertEquals(ProductStockExceptionMessage.NULL_PRODUCT.getMessage(), exception.getMessage());
@@ -91,9 +91,9 @@ class ProductStockTest {
             Product coke = new CommonProduct("콜라", 1000);
             Product sprite = new CommonProduct("사이다", 1000);
             Product orange = new CommonProduct("오랜지", 1000);
-            productStock.addProducts(coke, 5);
-            productStock.addProducts(sprite, 3);
-            productStock.addProducts(orange, 8);
+            productStock.addProduct(coke, 5);
+            productStock.addProduct(sprite, 3);
+            productStock.addProduct(orange, 8);
 
             // when
             ProductStockException exception = assertThrows(ProductStockException.class,
@@ -142,9 +142,9 @@ class ProductStockTest {
             Product sprite = new CommonProduct("사이다", 1000);
             Product orange = new CommonProduct("오랜지", 1000);
 
-            productStock.addProducts(coke, 5);
-            productStock.addProducts(sprite, 3);
-            productStock.addProducts(orange, 8);
+            productStock.addProduct(coke, 5);
+            productStock.addProduct(sprite, 3);
+            productStock.addProduct(orange, 8);
 
             // when
             productStock.reduceProductQuantity(coke.getName(), coke.getType(), 2);
@@ -164,9 +164,9 @@ class ProductStockTest {
             Product sprite = new CommonProduct("사이다", 1000);
             Product orange = new CommonProduct("오랜지", 1000);
             ProductStock productStock = new ProductStock();
-            productStock.addProducts(coke, 5);
-            productStock.addProducts(sprite, 3);
-            productStock.addProducts(orange, 8);
+            productStock.addProduct(coke, 5);
+            productStock.addProduct(sprite, 3);
+            productStock.addProduct(orange, 8);
 
             // when
             ProductStockException exception = assertThrows(ProductStockException.class,
@@ -183,9 +183,9 @@ class ProductStockTest {
             Product sprite = new CommonProduct("사이다", 1000);
             Product orange = new CommonProduct("오랜지", 1000);
             ProductStock productStock = new ProductStock();
-            productStock.addProducts(coke, 5);
-            productStock.addProducts(sprite, 3);
-            productStock.addProducts(orange, 8);
+            productStock.addProduct(coke, 5);
+            productStock.addProduct(sprite, 3);
+            productStock.addProduct(orange, 8);
 
             // when
             ProductStockException exception = assertThrows(ProductStockException.class,
