@@ -38,10 +38,34 @@ public class ProductStock {
                 .toList();
     }
 
+    public boolean isExistProduct(String name) {
+        return products.containsKey(name);
+    }
+
+    public boolean isExistProductWithType(String name, ProductType type) {
+        return products.get(name).containsKey(type);
+    }
+
+    public boolean isSufficientStock(String name, ProductType type, int quantity) {
+        if (name == null) {
+            throw new ProductStockException(ProductStockExceptionMessage.NULL_NAME);
+        }
+        if (type == null) {
+            throw new ProductStockException(ProductStockExceptionMessage.NULL_TYPE);
+        }
+        if (quantity <= 0) {
+            throw new ProductStockException(ProductStockExceptionMessage.INVALID_QUANTITY);
+        }
+
+        Product product = getProduct(name, type);
+        int currentQuantity = stocks.get(product.getUuid());
+        return currentQuantity >= quantity;
+    }
+
     public Map<ProductType, Product> getProducts(String name) {
         try {
             return products.get(name);
-        } catch (NullPointerException error) {
+        } catch (NullPointerException | ClassCastException error) {
             throw new ProductStockException(ProductStockExceptionMessage.NOT_EXIST_PRODUCT, error);
         }
     }

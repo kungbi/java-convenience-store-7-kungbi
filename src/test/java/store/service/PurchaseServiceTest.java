@@ -2,15 +2,6 @@ package store.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import store.dto.PurchaseInputDto;
-import store.entity.ProductStock;
-import store.entity.product.CommonProduct;
-import store.entity.product.Product;
-import store.entity.product.ProductType;
-
 class PurchaseServiceTest {
 
 //    @Nested

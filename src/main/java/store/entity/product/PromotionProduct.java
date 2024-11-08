@@ -10,6 +10,10 @@ public class PromotionProduct extends Product {
         this.promotion = promotion;
     }
 
+    public boolean isAvailable() {
+        return promotion.isAvailable();
+    }
+
     @Override
     public ProductType getType() {
         return ProductType.PROMOTION;
