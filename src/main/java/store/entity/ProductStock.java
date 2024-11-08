@@ -51,8 +51,6 @@ public class ProductStock {
         if (quantity < 0) {
             throw new ProductStockException(InventoryExceptionMessage.INVALID_QUANTITY);
         }
-        Product product = getProduct(name, type);
-        product.buy(quantity);
     }
 
 }

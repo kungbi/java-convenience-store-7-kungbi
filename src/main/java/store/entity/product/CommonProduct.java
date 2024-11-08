@@ -2,13 +2,8 @@ package store.entity.product;
 
 public class CommonProduct extends Product {
 
-    public CommonProduct(String name, int price, int quantity) {
-        super(name, price, quantity);
-    }
-
-    @Override
-    public int calculatePrice(int quantity) {
-        return getPrice() * quantity;
+    public CommonProduct(String name, int price) {
+        super(name, price);
     }
 
     @Override
@@ -18,6 +13,6 @@ public class CommonProduct extends Product {
 
     @Override
     public Product clone() {
-        return new CommonProduct(getName(), getPrice(), getQuantity());
+        return new CommonProduct(getName(), getPrice());
     }
 }

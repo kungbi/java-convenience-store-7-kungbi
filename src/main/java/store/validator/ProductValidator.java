@@ -5,7 +5,7 @@ import store.exception.message.ProductExceptionMessage;
 
 public class ProductValidator {
 
-    public static void validate(String name, int price, int quantity) {
+    public static void validate(String name, int price) {
         if (name == null) {
             throw new ProductException(ProductExceptionMessage.NULL_NAME);
         } else if (name.isEmpty()) {
@@ -14,8 +14,6 @@ public class ProductValidator {
             throw new ProductException(ProductExceptionMessage.EXCEED_NAME_LENGTH);
         } else if (price <= 0) {
             throw new ProductException(ProductExceptionMessage.LESS_THAN_OR_EQUAL_ZERO_PRICE);
-        } else if (quantity < 0) {
-            throw new ProductException(ProductExceptionMessage.NEGATIVE_QUANTITY);
         }
     }
 }
