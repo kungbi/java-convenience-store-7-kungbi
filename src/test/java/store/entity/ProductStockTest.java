@@ -147,9 +147,9 @@ class ProductStockTest {
             productStock.addProduct(orange, 8);
 
             // when
-            productStock.reduceProductQuantity(coke.getName(), coke.getType(), 2);
-            productStock.reduceProductQuantity(sprite.getName(), sprite.getType(), 1);
-            productStock.reduceProductQuantity(orange.getName(), orange.getType(), 3);
+            productStock.reduceProductQuantity(coke.getName(), 2);
+            productStock.reduceProductQuantity(sprite.getName(), 1);
+            productStock.reduceProductQuantity(orange.getName(), 3);
 
             // then
             assertEquals(3, productStock.getProductQuantity(coke.getName(), coke.getType()));
@@ -170,7 +170,7 @@ class ProductStockTest {
 
             // when
             ProductStockException exception = assertThrows(ProductStockException.class,
-                    () -> productStock.reduceProductQuantity(coke.getName(), coke.getType(), 6));
+                    () -> productStock.reduceProductQuantity(coke.getName(), 6));
 
             // then
             assertEquals(ProductStockExceptionMessage.INSUFFICIENT_STOCK.getMessage(), exception.getMessage());
@@ -189,7 +189,7 @@ class ProductStockTest {
 
             // when
             ProductStockException exception = assertThrows(ProductStockException.class,
-                    () -> productStock.reduceProductQuantity("포도", coke.getType(), 6));
+                    () -> productStock.reduceProductQuantity("포도", 6));
 
             // then
             assertEquals(ProductStockExceptionMessage.NOT_EXIST_PRODUCT.getMessage(), exception.getMessage());
