@@ -59,6 +59,10 @@ public class Promotion {
         return 0;
     }
 
+    public int calculateFreeCount(int quantity) {
+        return quantity / (buyQuantity + freeQuantity) * freeQuantity;
+    }
+
     public int getFreeQuantity() {
         return freeQuantity;
     }

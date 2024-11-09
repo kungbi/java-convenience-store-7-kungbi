@@ -39,4 +39,18 @@ public class PromotionService {
 
         return new PurchaseItemsDto(freePromotionItems);
     }
+
+    public int calculateFreeCount(PurchaseItemDto purchaseItemDto) {
+        if (!productStock.isExistProductWithType(purchaseItemDto.name(), ProductType.PROMOTION)) {
+            return 0;
+        }
+        PromotionProduct promotionProduct = (PromotionProduct) productStock.getProduct(purchaseItemDto.name(),
+                ProductType.PROMOTION);
+
+        if (!promotionProduct.isAvailable()) {
+            return 0;
+        }
+
+        return promotionProduct.getPromotion().calculateFreeCount(purchaseItemDto.quantity());
+    }
 }
