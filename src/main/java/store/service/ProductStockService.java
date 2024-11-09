@@ -3,10 +3,8 @@ package store.service;
 import store.dto.PurchaseItemDto;
 import store.dto.PurchaseItemsDto;
 import store.entity.ProductStock;
-import store.entity.product.Product;
 import store.entity.product.ProductType;
 import store.entity.product.PromotionProduct;
-import store.exception.ProductException;
 import store.exception.ProductStockException;
 import store.exception.message.ProductStockExceptionMessage;
 
@@ -17,47 +15,81 @@ public class ProductStockService {
         this.productStock = productStock;
     }
 
-    public boolean validateProductsAvailability(PurchaseItemsDto purchaseItemsDto) {
-        for (PurchaseItemDto product : purchaseItemsDto.products()) {
-            if (!productStock.isExistProduct(product.name())) {
-                throw new ProductStockException(ProductStockExceptionMessage.NOT_EXIST_PRODUCT);
-            }
-
-            validatePromotionProductStock(product);
-            validateCommonProductStock(product);
-        }
-        return true;
-    }
-
-    // private methods
-
-    private void validatePromotionProductStock(PurchaseItemDto product) {
-        if (productStock.isExistProductWithType(product.name(), ProductType.PROMOTION)) {
-            Product promotionProduct = productStock.getProduct(product.name(), ProductType.PROMOTION);
-
-            if (promotionProduct instanceof PromotionProduct promo && promo.isAvailable()) {
-
-                // 프로모션이 적용 가능하고, 프로모션 상품의 재고가 부족하면서, 일반 상품이 없는 경우
-                // 프로모션이 적용 가능하고, 프로모션 상품의 재고가 부족하면서, 일반 상품의 재고가 부족한 경우
-                if (!productStock.isSufficientStock(product.name(), ProductType.PROMOTION, product.quantity())) {
-                    if (!productStock.isExistProductWithType(product.name(), ProductType.COMMON)) {
-                        throw new ProductStockException(ProductStockExceptionMessage.INSUFFICIENT_STOCK);
-                    }
-
-                    if (!productStock.isSufficientStock(product.name(), ProductType.COMMON, product.quantity())) {
-                        throw new ProductException(ProductStockExceptionMessage.INSUFFICIENT_STOCK);
-                    }
-                }
-
-            }
+    /**
+     * 여러 상품의 재고를 검증합니다.
+     *
+     * @param purchaseItemsDto 구매 요청 상품 목록
+     * @throws ProductStockException 재고 부족 또는 존재하지 않는 상품에 대한 예외
+     */
+    public void validateStocks(PurchaseItemsDto purchaseItemsDto) {
+        for (PurchaseItemDto productDto : purchaseItemsDto.products()) {
+            validateStock(productDto);
         }
     }
 
-    private void validateCommonProductStock(PurchaseItemDto product) {
-        if (productStock.isExistProductWithType(product.name(), ProductType.COMMON) &&
-            !productStock.isSufficientStock(product.name(), ProductType.COMMON, product.quantity())) {
+    /**
+     * 여러 상품의 재고를 차감합니다.
+     *
+     * @param purchaseItemsDto 구매 요청 상품 목록
+     * @throws ProductStockException 재고 부족 또는 존재하지 않는 상품에 대한 예외
+     */
+    public void reduceStocks(PurchaseItemsDto purchaseItemsDto) {
+        for (PurchaseItemDto productDto : purchaseItemsDto.products()) {
+            reduceStock(productDto);
+        }
+    }
+
+    /**
+     * 특정 상품의 재고를 검증합니다.
+     *
+     * @param productDto 구매 요청 상품
+     * @throws ProductStockException 재고 부족 또는 존재하지 않는 상품에 대한 예외
+     */
+    public void validateStock(PurchaseItemDto productDto) {
+        if (!productStock.isExistProduct(productDto.name())) {
+            throw new ProductStockException(ProductStockExceptionMessage.NOT_EXIST_PRODUCT);
+        }
+
+        boolean isPromotionStockValid = validatePromotionStock(productDto);
+        boolean isCommonStockValid = validateCommonStock(productDto);
+
+        if (!isPromotionStockValid || !isCommonStockValid) {
             throw new ProductStockException(ProductStockExceptionMessage.INSUFFICIENT_STOCK);
         }
     }
 
+    /**
+     * 특정 상품의 재고를 차감합니다.
+     *
+     * @param productDto 구매 요청 상품
+     * @throws ProductStockException 재고 부족 또는 존재하지 않는 상품에 대한 예외
+     */
+    public void reduceStock(PurchaseItemDto productDto) {
+        this.validateStock(productDto);
+        productStock.reduceProductQuantity(productDto.name(), productDto.quantity());
+    }
+
+    // private helper methods
+
+    private boolean validatePromotionStock(PurchaseItemDto productDto) {
+        if (!productStock.isExistProductWithType(productDto.name(), ProductType.PROMOTION)) {
+            return true;
+        }
+
+        PromotionProduct promotionProduct = (PromotionProduct) productStock.getProduct(productDto.name(),
+                ProductType.PROMOTION);
+        if (!promotionProduct.getPromotion().isAvailable()) {
+            return true;
+        }
+
+        return productStock.isSufficientStock(productDto.name(), ProductType.PROMOTION, productDto.quantity()) ||
+               (productStock.isExistProductWithType(productDto.name(), ProductType.COMMON) &&
+                productStock.isSufficientStock(productDto.name(), ProductType.COMMON, productDto.quantity()));
+    }
+
+    private boolean validateCommonStock(PurchaseItemDto productDto) {
+        return !productStock.isExistProductWithType(productDto.name(), ProductType.COMMON) ||
+               productStock.isSufficientStock(productDto.name(), ProductType.COMMON, productDto.quantity());
+    }
 }
+
