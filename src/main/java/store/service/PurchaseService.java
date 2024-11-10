@@ -6,6 +6,7 @@ import store.dto.ItemDto;
 import store.dto.PurchaseItemsDto;
 import store.dto.PurchaseRequestDto;
 import store.dto.PurchaseResultDto;
+import store.dto.PurchaseResultItemDto;
 import store.entity.Promotion;
 import store.entity.membership.Membership;
 import store.entity.product.Product;
@@ -30,6 +31,7 @@ public class PurchaseService {
         ));
 
         List<ItemDto> freeItems = new ArrayList<>();
+        List<PurchaseResultItemDto> purchaseItems = new ArrayList<>();
         for (ItemDto product : purchaseInputDto.products()) {
             if (productStockService.getProduct(product.name(), ProductType.PROMOTION).getType()
                 != ProductType.PROMOTION) {
@@ -42,6 +44,9 @@ public class PurchaseService {
             if (freeCount > 0) {
                 freeItems.add(new ItemDto(product.name(), freeCount));
             }
+
+            purchaseItems.add(
+                    new PurchaseResultItemDto(product.name(), product.quantity(), calculateItemPrice(product)));
         }
 
         int totalAmount = calculateItemsTotalPrice(purchaseInputDto.products());
@@ -59,7 +64,7 @@ public class PurchaseService {
         ));
 
         return new PurchaseResultDto.Builder()
-                .purchaseItems(purchaseInputDto.products())
+                .purchaseItems(purchaseItems)
                 .freeItems(freeItems)
                 .promotionDiscountAmount(promotionDiscountAmount)
                 .membershipDiscountAmount(membershipDiscountAmount)

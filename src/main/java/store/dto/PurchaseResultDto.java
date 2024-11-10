@@ -4,7 +4,7 @@ package store.dto;
 import java.util.List;
 
 public record PurchaseResultDto(
-        List<ItemDto> purchaseItems,
+        List<PurchaseResultItemDto> purchaseItems,
         List<ItemDto> freeItems,
         int totalAmount,
         int promotionDiscountAmount,
@@ -33,14 +33,14 @@ public record PurchaseResultDto(
     }
 
     public static class Builder {
-        private List<ItemDto> purchaseItems;
+        private List<PurchaseResultItemDto> purchaseItems;
         private List<ItemDto> freeItems;
         private int totalAmount;
         private int discountAmount;
         private int membershipDiscountAmount;
         private int paymentAmount;
 
-        public Builder purchaseItems(List<ItemDto> purchaseItems) {
+        public Builder purchaseItems(List<PurchaseResultItemDto> purchaseItems) {
             this.purchaseItems = purchaseItems;
             return this;
         }

@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import store.dto.ItemDto;
 import store.dto.PurchaseRequestDto;
 import store.dto.PurchaseResultDto;
+import store.dto.PurchaseResultItemDto;
 import store.entity.ProductStock;
 import store.entity.Promotion;
 import store.entity.membership.BasicMembership;
@@ -36,8 +37,8 @@ class PurchaseServiceTest {
                             ), false),
                             new PurchaseResultDto.Builder()
                                     .purchaseItems(List.of(
-                                            new ItemDto(
-                                                    "콜라", 2
+                                            new PurchaseResultItemDto(
+                                                    "콜라", 2, 2000
                                             )
                                     ))
                                     .freeItems(List.of(
@@ -63,8 +64,8 @@ class PurchaseServiceTest {
                             ), false),
                             new PurchaseResultDto.Builder()
                                     .purchaseItems(List.of(
-                                            new ItemDto(
-                                                    "밀키스", 6
+                                            new PurchaseResultItemDto(
+                                                    "밀키스", 6, 6000
                                             )
                                     ))
                                     .freeItems(List.of(
@@ -90,8 +91,8 @@ class PurchaseServiceTest {
                             ), false),
                             new PurchaseResultDto.Builder()
                                     .purchaseItems(List.of(
-                                            new ItemDto(
-                                                    "카스", 3
+                                            new PurchaseResultItemDto(
+                                                    "카스", 3, 4000
                                             )
                                     ))
                                     .freeItems(List.of(
