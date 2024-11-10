@@ -148,5 +148,6 @@
 - [x] 프로모션 service
 - [x] 구매 service
 
-- [ ] View 구현
-- [ ] Controller 구현
+- [x] View 구현
+- [x] Controller 구현
+
