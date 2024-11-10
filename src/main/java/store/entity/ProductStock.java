@@ -112,33 +112,41 @@ public class ProductStock {
         if (!isExistProduct(name)) {
             throw new ProductStockException(ProductStockExceptionMessage.NOT_EXIST_PRODUCT);
         }
+
         Map<ProductType, Product> products = getProducts(name);
+
+        int remainingQuantity = quantity;
+
+        // 프로모션 상품 재고 차감
         if (products.containsKey(ProductType.PROMOTION)) {
             PromotionProduct promotionProduct = (PromotionProduct) products.get(ProductType.PROMOTION);
-            if (!promotionProduct.isAvailable()) {
-                return;
-            }
-
-            if (stocks.get(promotionProduct.getUuid()) >= quantity) {
-                stocks.put(promotionProduct.getUuid(), stocks.get(promotionProduct.getUuid()) - quantity);
-                return;
-            }
-            if (products.containsKey(ProductType.PROMOTION)) {
-                Product commonProduct = products.get(ProductType.COMMON);
-                if (stocks.get(commonProduct.getUuid()) >= quantity) {
-                    stocks.put(commonProduct.getUuid(), stocks.get(commonProduct.getUuid()) - quantity);
+            if (promotionProduct.isAvailable()) {
+                int promotionStock = stocks.getOrDefault(promotionProduct.getUuid(), 0);
+                if (promotionStock >= remainingQuantity) {
+                    stocks.put(promotionProduct.getUuid(), promotionStock - remainingQuantity);
                     return;
                 }
+                stocks.put(promotionProduct.getUuid(), 0);
+                remainingQuantity -= promotionStock;
             }
         }
-        if (products.containsKey(ProductType.COMMON)) {
+
+        // 일반 상품 재고 차감
+        if (remainingQuantity > 0 && products.containsKey(ProductType.COMMON)) {
             Product commonProduct = products.get(ProductType.COMMON);
-            if (stocks.get(commonProduct.getUuid()) >= quantity) {
-                stocks.put(commonProduct.getUuid(), stocks.get(commonProduct.getUuid()) - quantity);
+            int commonStock = stocks.getOrDefault(commonProduct.getUuid(), 0);
+            if (commonStock >= remainingQuantity) {
+                stocks.put(commonProduct.getUuid(), commonStock - remainingQuantity);
                 return;
             }
+            throw new ProductStockException(ProductStockExceptionMessage.INSUFFICIENT_STOCK);
         }
-        throw new ProductStockException(ProductStockExceptionMessage.INSUFFICIENT_STOCK);
+
+        // 재고 부족 시 예외 발생
+        if (remainingQuantity > 0) {
+            throw new ProductStockException(ProductStockExceptionMessage.INSUFFICIENT_STOCK);
+        }
     }
+
 
 }

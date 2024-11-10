@@ -1,6 +1,7 @@
 package store.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +17,7 @@ import store.entity.ProductStock;
 import store.entity.Promotion;
 import store.entity.membership.BasicMembership;
 import store.entity.product.CommonProduct;
+import store.entity.product.ProductType;
 import store.entity.product.PromotionProduct;
 
 class PurchaseServiceTest {
@@ -24,6 +26,18 @@ class PurchaseServiceTest {
     class 상품_구매_테스트_ONLY_일반상품 {
         ProductStock productStock;
         PurchaseService purchaseService;
+
+        static class StockExpect {
+            String name;
+            int quantity;
+            ProductType type;
+
+            public StockExpect(String name, int quantity, ProductType type) {
+                this.name = name;
+                this.quantity = quantity;
+                this.type = type;
+            }
+        }
 
         static Stream<Arguments> 정상__상품_구매_테스트_케이스() {
             return Stream.of(
@@ -48,7 +62,11 @@ class PurchaseServiceTest {
                                     .paymentAmount(1000)
                                     .membershipDiscountAmount(0)
                                     .promotionDiscountAmount(1000)
-                                    .build()
+                                    .build(),
+                            List.of(
+                                    new StockExpect("콜라", 5, ProductType.COMMON),
+                                    new StockExpect("콜라", 3, ProductType.PROMOTION)
+                            )
                     ),
                     Arguments.of(
                             new PurchaseRequestDto(List.of(
@@ -71,7 +89,11 @@ class PurchaseServiceTest {
                                     .promotionDiscountAmount(1000)
                                     .membershipDiscountAmount(0)
                                     .paymentAmount(5000)
-                                    .build()
+                                    .build(),
+                            List.of(
+                                    new StockExpect("밀키스", 4, ProductType.COMMON),
+                                    new StockExpect("밀키스", 0, ProductType.PROMOTION)
+                            )
                     ),
                     Arguments.of(
                             new PurchaseRequestDto(List.of(
@@ -91,7 +113,11 @@ class PurchaseServiceTest {
                                     .promotionDiscountAmount(0)
                                     .membershipDiscountAmount(0)
                                     .paymentAmount(4000)
-                                    .build()
+                                    .build(),
+                            List.of(
+                                    new StockExpect("카스", 4, ProductType.COMMON),
+                                    new StockExpect("카스", 0, ProductType.PROMOTION)
+                            )
                     )
             );
         }
@@ -120,7 +146,7 @@ class PurchaseServiceTest {
 
         @ParameterizedTest
         @MethodSource("정상__상품_구매_테스트_케이스")
-        void 정상__상품_구매(PurchaseRequestDto purchaseInputDto, PurchaseResultDto expected) {
+        void 정상__상품_구매(PurchaseRequestDto purchaseInputDto, PurchaseResultDto expected, List<StockExpect> stockExpect) {
             // given
 
             // when
@@ -129,6 +155,10 @@ class PurchaseServiceTest {
 
             // then
             Assertions.assertEquals(expected, purchase);
+
+            for (StockExpect expect : stockExpect) {
+                Assertions.assertEquals(expect.quantity, productStock.getProductQuantity(expect.name, expect.type));
+            }
         }
     }
 
