@@ -77,4 +77,12 @@ public class Promotion {
         LocalDateTime now = DateTimes.now();
         return now.isAfter(startDate) && now.isBefore(endDate);
     }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
 }
