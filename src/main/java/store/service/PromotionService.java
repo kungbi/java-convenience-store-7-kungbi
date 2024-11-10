@@ -5,7 +5,6 @@ import java.util.List;
 import store.dto.AdditionalFreeItemsDto;
 import store.dto.ExcludedPromotionItemsDto;
 import store.dto.ItemDto;
-import store.dto.PurchaseItemDto;
 import store.dto.PurchaseItemsDto;
 import store.entity.ProductStock;
 import store.entity.Promotion;
@@ -21,7 +20,7 @@ public class PromotionService {
 
     public AdditionalFreeItemsDto findAdditionalFreeItems(PurchaseItemsDto purchaseItemsDto) {
         List<ItemDto> freePromotionItems = new ArrayList<>();
-        for (PurchaseItemDto product : purchaseItemsDto.products()) {
+        for (ItemDto product : purchaseItemsDto.products()) {
             extracted(product, freePromotionItems);
         }
         return new AdditionalFreeItemsDto(freePromotionItems);
@@ -29,7 +28,7 @@ public class PromotionService {
 
     public ExcludedPromotionItemsDto findExcludedPromotionItems(PurchaseItemsDto purchaseItemsDto) {
         List<ItemDto> excludedPromotionItems = new ArrayList<>();
-        for (PurchaseItemDto product : purchaseItemsDto.products()) {
+        for (ItemDto product : purchaseItemsDto.products()) {
             if (!productStock.isExistProductWithType(product.name(), ProductType.PROMOTION)) {
                 continue;
             }
@@ -52,7 +51,7 @@ public class PromotionService {
     }
 
 
-    public int calculateFreeCount(PurchaseItemDto purchaseItemDto) {
+    public int calculateFreeCount(ItemDto purchaseItemDto) {
         if (!productStock.isExistProductWithType(purchaseItemDto.name(), ProductType.PROMOTION)) {
             return 0;
         }
@@ -66,7 +65,7 @@ public class PromotionService {
         return promotionProduct.getPromotion().calculateFreeCount(purchaseItemDto.quantity());
     }
 
-    private void extracted(PurchaseItemDto product, List<ItemDto> freePromotionItems) {
+    private void extracted(ItemDto product, List<ItemDto> freePromotionItems) {
         if (!productStock.isExistProductWithType(product.name(), ProductType.PROMOTION)) {
             return;
         }

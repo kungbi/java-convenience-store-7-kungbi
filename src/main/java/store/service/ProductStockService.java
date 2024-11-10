@@ -1,6 +1,6 @@
 package store.service;
 
-import store.dto.PurchaseItemDto;
+import store.dto.ItemDto;
 import store.dto.PurchaseItemsDto;
 import store.entity.ProductStock;
 import store.entity.product.ProductType;
@@ -22,7 +22,7 @@ public class ProductStockService {
      * @throws ProductStockException 재고 부족 또는 존재하지 않는 상품에 대한 예외
      */
     public void validateStocks(PurchaseItemsDto purchaseItemsDto) {
-        for (PurchaseItemDto productDto : purchaseItemsDto.products()) {
+        for (ItemDto productDto : purchaseItemsDto.products()) {
             validateStock(productDto);
         }
     }
@@ -34,7 +34,7 @@ public class ProductStockService {
      * @throws ProductStockException 재고 부족 또는 존재하지 않는 상품에 대한 예외
      */
     public void reduceStocks(PurchaseItemsDto purchaseItemsDto) {
-        for (PurchaseItemDto productDto : purchaseItemsDto.products()) {
+        for (ItemDto productDto : purchaseItemsDto.products()) {
             reduceStock(productDto);
         }
     }
@@ -45,7 +45,7 @@ public class ProductStockService {
      * @param productDto 구매 요청 상품
      * @throws ProductStockException 재고 부족 또는 존재하지 않는 상품에 대한 예외
      */
-    public void validateStock(PurchaseItemDto productDto) {
+    public void validateStock(ItemDto productDto) {
         if (!productStock.isExistProduct(productDto.name())) {
             throw new ProductStockException(ProductStockExceptionMessage.NOT_EXIST_PRODUCT);
         }
@@ -64,14 +64,14 @@ public class ProductStockService {
      * @param productDto 구매 요청 상품
      * @throws ProductStockException 재고 부족 또는 존재하지 않는 상품에 대한 예외
      */
-    public void reduceStock(PurchaseItemDto productDto) {
+    public void reduceStock(ItemDto productDto) {
         this.validateStock(productDto);
         productStock.reduceProductQuantity(productDto.name(), productDto.quantity());
     }
 
     // private helper methods
 
-    private boolean validatePromotionStock(PurchaseItemDto productDto) {
+    private boolean validatePromotionStock(ItemDto productDto) {
         if (!productStock.isExistProductWithType(productDto.name(), ProductType.PROMOTION)) {
             return false;
         }
@@ -102,7 +102,7 @@ public class ProductStockService {
         return false;
     }
 
-    private boolean validateCommonStock(PurchaseItemDto productDto) {
+    private boolean validateCommonStock(ItemDto productDto) {
         if (!productStock.isExistProductWithType(productDto.name(), ProductType.COMMON)) {
             return false;
         }

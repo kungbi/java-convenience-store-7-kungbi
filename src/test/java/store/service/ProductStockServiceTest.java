@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import store.dto.PurchaseItemDto;
+import store.dto.ItemDto;
 import store.dto.PurchaseItemsDto;
 import store.entity.ProductStock;
 import store.entity.Promotion;
@@ -33,8 +33,8 @@ class ProductStockServiceTest {
                     Arguments.of(
                             new PurchaseItemsDto(
                                     List.of(
-                                            new PurchaseItemDto("콜라", 1),
-                                            new PurchaseItemDto("사이다", 1)
+                                            new ItemDto("콜라", 1),
+                                            new ItemDto("사이다", 1)
                                     )
                             ),
                             true
@@ -43,7 +43,7 @@ class ProductStockServiceTest {
                     Arguments.of(
                             new PurchaseItemsDto(
                                     List.of(
-                                            new PurchaseItemDto("사이다", 4)
+                                            new ItemDto("사이다", 4)
                                     )
                             ),
                             true
@@ -52,7 +52,7 @@ class ProductStockServiceTest {
                     Arguments.of(
                             new PurchaseItemsDto(
                                     List.of(
-                                            new PurchaseItemDto("밀키스", 3)
+                                            new ItemDto("밀키스", 3)
                                     )
                             ),
                             true
@@ -66,7 +66,7 @@ class ProductStockServiceTest {
                     Arguments.of(
                             new PurchaseItemsDto(
                                     List.of(
-                                            new PurchaseItemDto("펩시", 4)
+                                            new ItemDto("펩시", 4)
                                     )
                             ),
                             ProductStockExceptionMessage.INSUFFICIENT_STOCK
@@ -75,8 +75,8 @@ class ProductStockServiceTest {
                     Arguments.of(
                             new PurchaseItemsDto(
                                     List.of(
-                                            new PurchaseItemDto("콜라", 1),
-                                            new PurchaseItemDto("없는상품", 1)
+                                            new ItemDto("콜라", 1),
+                                            new ItemDto("없는상품", 1)
                                     )
                             ),
                             ProductStockExceptionMessage.NOT_EXIST_PRODUCT
@@ -85,7 +85,7 @@ class ProductStockServiceTest {
                     Arguments.of(
                             new PurchaseItemsDto(
                                     List.of(
-                                            new PurchaseItemDto("콜라", 100)
+                                            new ItemDto("콜라", 100)
                                     )
                             ),
                             ProductStockExceptionMessage.INSUFFICIENT_STOCK
@@ -94,7 +94,7 @@ class ProductStockServiceTest {
                     Arguments.of(
                             new PurchaseItemsDto(
                                     List.of(
-                                            new PurchaseItemDto("밀키스", 11)
+                                            new ItemDto("밀키스", 11)
                                     )
                             ),
                             ProductStockExceptionMessage.INSUFFICIENT_STOCK
@@ -173,8 +173,8 @@ class ProductStockServiceTest {
             // when
             productStockService.reduceStocks(new PurchaseItemsDto(
                     List.of(
-                            new PurchaseItemDto("콜라", 1),
-                            new PurchaseItemDto("사이다", 1)
+                            new ItemDto("콜라", 1),
+                            new ItemDto("사이다", 1)
                     )
             ));
 

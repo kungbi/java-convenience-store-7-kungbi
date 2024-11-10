@@ -12,7 +12,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import store.dto.AdditionalFreeItemsDto;
 import store.dto.ExcludedPromotionItemsDto;
 import store.dto.ItemDto;
-import store.dto.PurchaseItemDto;
 import store.dto.PurchaseItemsDto;
 import store.entity.ProductStock;
 import store.entity.Promotion;
@@ -30,10 +29,10 @@ class PromotionServiceTest {
                     // 구매 요청 상품이 모두 존재하고, 재고가 충분한 경우
                     Arguments.of(
                             new PurchaseItemsDto(List.of(
-                                    new PurchaseItemDto("콜라", 1),
-                                    new PurchaseItemDto("사이다", 1),
-                                    new PurchaseItemDto("펩시", 1),
-                                    new PurchaseItemDto("밀키스", 1)
+                                    new ItemDto("콜라", 1),
+                                    new ItemDto("사이다", 1),
+                                    new ItemDto("펩시", 1),
+                                    new ItemDto("밀키스", 1)
                             )),
                             new AdditionalFreeItemsDto(List.of(
                                     new ItemDto("사이다", 1),
@@ -42,7 +41,7 @@ class PromotionServiceTest {
                     ),
                     Arguments.of(
                             new PurchaseItemsDto(List.of(
-                                    new PurchaseItemDto("카스", 5)
+                                    new ItemDto("카스", 5)
                             )),
                             new AdditionalFreeItemsDto(List.of(
                                     new ItemDto("카스", 1)
@@ -50,7 +49,7 @@ class PromotionServiceTest {
                     ),
                     Arguments.of(
                             new PurchaseItemsDto(List.of(
-                                    new PurchaseItemDto("테라", 5)
+                                    new ItemDto("테라", 5)
                             )),
                             new AdditionalFreeItemsDto(List.of(
                             ))
@@ -107,12 +106,12 @@ class PromotionServiceTest {
 
         static Stream<Arguments> 정상__증정상품_수량_계산하기() {
             return Stream.of(
-                    Arguments.of(new PurchaseItemDto("콜라", 1), 0),
-                    Arguments.of(new PurchaseItemDto("사이다", 2), 1),
-                    Arguments.of(new PurchaseItemDto("펩시", 1), 0),
-                    Arguments.of(new PurchaseItemDto("밀키스", 2), 0),
-                    Arguments.of(new PurchaseItemDto("카스", 6), 2),
-                    Arguments.of(new PurchaseItemDto("테라", 3), 1)
+                    Arguments.of(new ItemDto("콜라", 1), 0),
+                    Arguments.of(new ItemDto("사이다", 2), 1),
+                    Arguments.of(new ItemDto("펩시", 1), 0),
+                    Arguments.of(new ItemDto("밀키스", 2), 0),
+                    Arguments.of(new ItemDto("카스", 6), 2),
+                    Arguments.of(new ItemDto("테라", 3), 1)
             );
         }
 
@@ -141,7 +140,7 @@ class PromotionServiceTest {
 
         @ParameterizedTest
         @MethodSource()
-        void 정상__증정상품_수량_계산하기(PurchaseItemDto purchaseItemDto, int expected) {
+        void 정상__증정상품_수량_계산하기(ItemDto purchaseItemDto, int expected) {
             // given
             PromotionService promotionService = new PromotionService(productStock);
 
@@ -160,11 +159,11 @@ class PromotionServiceTest {
         static Stream<Arguments> 정상__증정상품_수량_계산하기() {
             return Stream.of(
                     Arguments.of(
-                            new PurchaseItemsDto(List.of(new PurchaseItemDto("사이다", 3))),
+                            new PurchaseItemsDto(List.of(new ItemDto("사이다", 3))),
                             new ExcludedPromotionItemsDto(List.of(new ItemDto("사이다", 1)))
                     ),
                     Arguments.of(
-                            new PurchaseItemsDto(List.of(new PurchaseItemDto("테라", 5))),
+                            new PurchaseItemsDto(List.of(new ItemDto("테라", 5))),
                             new ExcludedPromotionItemsDto(List.of(new ItemDto("테라", 2)))
                     )
             );
