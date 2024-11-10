@@ -29,25 +29,37 @@ public class PromotionService {
     public ExcludedPromotionItemsDto findExcludedPromotionItems(PurchaseItemsDto purchaseItemsDto) {
         List<ItemDto> excludedPromotionItems = new ArrayList<>();
         for (ItemDto product : purchaseItemsDto.products()) {
-            if (!productStock.isExistProductWithType(product.name(), ProductType.PROMOTION)) {
-                continue;
+            ItemDto excludedPromotionItem = findExcludedPromotionItem(product);
+            if (excludedPromotionItem.quantity() > 0) {
+                excludedPromotionItems.add(excludedPromotionItem);
             }
-
-            Promotion promotion = ((PromotionProduct) productStock.getProduct(product.name(),
-                    ProductType.PROMOTION)).getPromotion();
-            if (!promotion.isAvailable()) {
-                continue;
-            }
-
-            if (!productStock.isExistProductWithType(product.name(), ProductType.PROMOTION)) {
-                continue;
-            }
-
-            int excludedPromotionCount = promotion.calculateExcludedPromotionCount(product.quantity(),
-                    productStock.getProductQuantity(product.name(), ProductType.PROMOTION));
-            excludedPromotionItems.add(new ItemDto(product.name(), excludedPromotionCount));
         }
         return new ExcludedPromotionItemsDto(excludedPromotionItems);
+    }
+
+    public ItemDto findExcludedPromotionItem(ItemDto product) {
+        // 프로모션 상품이 존재하지 않거나, 프로모션이 적용 불가능한 경우 0을 반환
+        if (!productStock.isExistProductWithType(product.name(), ProductType.PROMOTION)) {
+            return new ItemDto(product.name(), 0);
+        }
+
+        PromotionProduct promotionProduct = (PromotionProduct) productStock.getProduct(product.name(),
+                ProductType.PROMOTION);
+        Promotion promotion = promotionProduct.getPromotion();
+
+        // 프로모션이 적용 불가능한 경우 0을 반환
+        if (!promotion.isAvailable()) {
+            return new ItemDto(product.name(), 0);
+        }
+
+        // 프로모션 제외 수량 계산
+        int excludedPromotionCount = promotion.calculateExcludedPromotionCount(
+                product.quantity(),
+                productStock.getProductQuantity(product.name(), ProductType.PROMOTION)
+        );
+
+        // 항상 ItemDto 반환, 제외 수량이 없으면 0을 설정
+        return new ItemDto(product.name(), excludedPromotionCount);
     }
 
 

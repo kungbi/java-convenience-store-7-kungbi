@@ -3,6 +3,7 @@ package store.service;
 import store.dto.ItemDto;
 import store.dto.PurchaseItemsDto;
 import store.entity.ProductStock;
+import store.entity.product.Product;
 import store.entity.product.ProductType;
 import store.entity.product.PromotionProduct;
 import store.exception.ProductStockException;
@@ -67,6 +68,18 @@ public class ProductStockService {
     public void reduceStock(ItemDto productDto) {
         this.validateStock(productDto);
         productStock.reduceProductQuantity(productDto.name(), productDto.quantity());
+    }
+
+    public Product getProduct(String name, ProductType type) {
+        return productStock.getProduct(name, type);
+    }
+
+    public boolean isExistProductWithType(String name, ProductType type) {
+        return productStock.isExistProductWithType(name, type);
+    }
+
+    public int getProductQuantity(String name, ProductType type) {
+        return productStock.getProductQuantity(name, type);
     }
 
     // private helper methods
