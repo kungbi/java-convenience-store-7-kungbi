@@ -20,7 +20,7 @@ public class ConsoleOutput {
         System.out.println("현재 보유하고 있는 상품입니다.\n");
         for (ProductInfoDto product : products) {
             StringBuilder output = new StringBuilder();
-            output.append("- ").append(product.name()).append(" ").append(product.price()).append("원 ");
+            output.append("- ").append(product.name()).append(" ").append(String.format("%,d", product.price())).append("원 ");
 
             if (product.quantity() > 0) {
                 output.append(product.quantity()).append("개");
@@ -66,7 +66,7 @@ public class ConsoleOutput {
     }
 
     public void printException(Exception e) {
-        System.out.println(e.getMessage());
+        System.out.println("[ERROR] " + e.getMessage());
     }
 
 }

@@ -8,7 +8,7 @@ public enum ProductStockExceptionMessage implements ExceptionMessage {
     NOT_EXIST_PRODUCT("존재하지 않는 상품입니다."),
     INVALID_QUANTITY("상품의 수량이 올바르지 않습니다."),
     NEGATIVE_QUANTITY("상품 수량이 0개 미만입니다."),
-    INSUFFICIENT_STOCK("상품 재고가 부족합니다.");
+    INSUFFICIENT_STOCK("재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
 
     private final String message;
 

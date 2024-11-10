@@ -33,35 +33,37 @@ public class StoreController {
     }
 
     public void run() {
-        consoleOutput.printWelcomeMessage();
-        consoleOutput.printProductList(productStockService.getProductsInformation());
+        try {
+            consoleOutput.printWelcomeMessage();
+            consoleOutput.printProductList(productStockService.getProductsInformation());
 
-        String purchaseItemsString = consoleInput.getPurchaseItems();
+            String purchaseItemsString = consoleInput.getPurchaseItems();
 
-        List<ItemDto> purchaseItems = InputParser.parseItems(purchaseItemsString);
+            List<ItemDto> purchaseItems = InputParser.parseItems(purchaseItemsString);
 
-        productStockService.validateStocks(new PurchaseItemsDto(
-                purchaseItems
-        ));
+            productStockService.validateStocks(new PurchaseItemsDto(
+                    purchaseItems
+            ));
 
-        for (ItemDto item : promotionService.findAdditionalFreeItems(new PurchaseItemsDto(purchaseItems)).products()) {
-            String answer = consoleInput.askForAdditionalPromotion(item.name());
-            if (answer.equals("Y")) {
-                purchaseItems = this.editItemDtos(purchaseItems, item.name(), item.quantity());
+            for (ItemDto item : promotionService.findAdditionalFreeItems(new PurchaseItemsDto(purchaseItems)).products()) {
+                String answer = consoleInput.askForAdditionalPromotion(item.name());
+                if (answer.equals("Y")) {
+                    purchaseItems = this.editItemDtos(purchaseItems, item.name(), item.quantity());
+                }
             }
+
+            for (ItemDto item : promotionService.findExcludedPromotionItems(new PurchaseItemsDto(purchaseItems)).items()) {
+                consoleInput.askForFullPricePurchase(item.name(), item.quantity());
+            }
+
+            PurchaseResultDto purchase = purchaseService.purchase(new PurchaseRequestDto(
+                    purchaseItems, false
+            ));
+
+            consoleOutput.printPurchaseSummary(purchase);
+        } catch (IllegalArgumentException error) {
+            consoleOutput.printException(error);
         }
-
-        for (ItemDto item : promotionService.findExcludedPromotionItems(new PurchaseItemsDto(purchaseItems)).items()) {
-            consoleInput.askForFullPricePurchase(item.name(), item.quantity());
-        }
-
-        PurchaseResultDto purchase = purchaseService.purchase(new PurchaseRequestDto(
-                purchaseItems, false
-        ));
-
-        consoleOutput.printPurchaseSummary(purchase);
-
-
     }
 
     private List<ItemDto> editItemDtos(List<ItemDto> itemDtos, String name, int quantity) {

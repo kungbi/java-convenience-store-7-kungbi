@@ -7,6 +7,8 @@ import store.entity.ProductStock;
 import store.entity.Promotion;
 import store.entity.PromotionManagement;
 import store.entity.product.CommonProduct;
+import store.entity.product.Product;
+import store.entity.product.ProductType;
 import store.entity.product.PromotionProduct;
 import store.utils.parser.CsvReader;
 import store.utils.parser.ProductFieldsDto;
@@ -54,6 +56,15 @@ public class InitialDataService {
                         promotionManagement.getPromotion(productFieldsDto.promotionName())
                 ), productFieldsDto.quantity(
                 ));
+            }
+        }
+
+        for (Product product : productStock.getProducts()) {
+            if (!productStock.isExistProductWithType(product.getName(), ProductType.COMMON)) {
+                productStock.addProduct(new CommonProduct(
+                        product.getName(),
+                        product.getPrice()
+                ), 0);
             }
         }
     }
