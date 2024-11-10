@@ -2,8 +2,6 @@ package store.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import store.dto.ItemDto;
 import store.dto.PurchaseItemsDto;
 import store.dto.PurchaseRequestDto;
@@ -39,15 +37,8 @@ public class StoreController {
         consoleOutput.printProductList(productStockService.getProductsInformation());
 
         String purchaseItemsString = consoleInput.getPurchaseItems();
-        Pattern pattern = Pattern.compile("\\[(.+)-(\\d+)\\]");
-        Matcher matcher = pattern.matcher(purchaseItemsString);
 
-        List<ItemDto> purchaseItems = new ArrayList<>();
-        while (matcher.find()) {
-            String name = matcher.group(1);     // 상품명
-            int quantity = Integer.parseInt(matcher.group(2)); // 수량
-            purchaseItems.add(new ItemDto(name, quantity));
-        }
+        List<ItemDto> purchaseItems = InputParser.parseItems(purchaseItemsString);
 
         productStockService.validateStocks(new PurchaseItemsDto(
                 purchaseItems
