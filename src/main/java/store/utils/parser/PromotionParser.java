@@ -1,4 +1,4 @@
-package store.utils.parsor;
+package store.utils.parser;
 
 import java.io.IOException;
 import java.util.List;

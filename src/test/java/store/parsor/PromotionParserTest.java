@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.io.StringReader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import store.utils.parsor.CsvReader;
-import store.utils.parsor.PromotionFieldsDto;
-import store.utils.parsor.PromotionParser;
+import store.utils.parser.CsvReader;
+import store.utils.parser.PromotionFieldsDto;
+import store.utils.parser.PromotionParser;
 
 class PromotionParserTest {
 

@@ -1,7 +1,6 @@
 package store.service;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import store.entity.ProductStock;
@@ -9,11 +8,11 @@ import store.entity.Promotion;
 import store.entity.PromotionManagement;
 import store.entity.product.CommonProduct;
 import store.entity.product.PromotionProduct;
-import store.utils.parsor.CsvReader;
-import store.utils.parsor.ProductFieldsDto;
-import store.utils.parsor.ProductParser;
-import store.utils.parsor.PromotionFieldsDto;
-import store.utils.parsor.PromotionParser;
+import store.utils.parser.CsvReader;
+import store.utils.parser.ProductFieldsDto;
+import store.utils.parser.ProductParser;
+import store.utils.parser.PromotionFieldsDto;
+import store.utils.parser.PromotionParser;
 
 public class InitialDataService {
 

@@ -1,4 +1,4 @@
-package store.utils.parsor;
+package store.utils.parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;

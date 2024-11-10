@@ -1,4 +1,4 @@
-package store.utils.parsor;
+package store.utils.parser;
 
 public record ProductFieldsDto(String name, int price, int quantity, String promotionName) {
     public ProductFieldsDto {
