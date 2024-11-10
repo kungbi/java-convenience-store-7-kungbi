@@ -3,6 +3,7 @@ package store.service;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import store.entity.ProductStock;
 import store.entity.Promotion;
 import store.entity.PromotionManagement;
@@ -18,7 +19,9 @@ public class InitialDataService {
 
     public static void init(ProductStock productStock, PromotionManagement promotionManagement)
             throws IOException {
-        BufferedReader promotionBufferedReader = new BufferedReader(new FileReader("../resources/promotions.md"));
+        BufferedReader promotionBufferedReader = new BufferedReader(
+                new InputStreamReader(InitialDataService.class.getClassLoader().getResourceAsStream("promotions.md"))
+        );
         PromotionParser promotionParser = new PromotionParser(new CsvReader(promotionBufferedReader, true));
 
         PromotionFieldsDto promotionFieldsDto;
@@ -32,7 +35,9 @@ public class InitialDataService {
             ));
         }
 
-        BufferedReader productBufferReader = new BufferedReader(new FileReader("../resources/products.md"));
+        BufferedReader productBufferReader = new BufferedReader(
+                new InputStreamReader(InitialDataService.class.getClassLoader().getResourceAsStream("products.md"))
+        );
         ProductParser productParser = new ProductParser(new CsvReader(productBufferReader, true));
 
         ProductFieldsDto productFieldsDto;
