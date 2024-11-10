@@ -19,7 +19,7 @@ class PromotionParserTest {
                 new CsvReader(new BufferedReader(new StringReader(data)), true));
 
         // when
-        PromotionFieldsDto promotionFieldsDto = promotionParser.nextProduct();
+        PromotionFieldsDto promotionFieldsDto = promotionParser.nextPromotion();
 
         // then
         Assertions.assertEquals("탄산2+1", promotionFieldsDto.name());

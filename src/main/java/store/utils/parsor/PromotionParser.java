@@ -11,7 +11,7 @@ public class PromotionParser {
         this.reader = reader;
     }
 
-    public PromotionFieldsDto nextProduct() throws IOException {
+    public PromotionFieldsDto nextPromotion() throws IOException {
         List<String> fields = reader.readLine();
 
         if (fields == null || fields.isEmpty()) {
