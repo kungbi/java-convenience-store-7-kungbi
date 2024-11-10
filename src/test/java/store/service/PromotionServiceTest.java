@@ -53,6 +53,13 @@ class PromotionServiceTest {
                             )),
                             new AdditionalFreeItemsDto(List.of(
                             ))
+                    ),
+                    Arguments.of(
+                            new PurchaseItemsDto(List.of(
+                                    new ItemDto("과자", 8)
+                            )),
+                            new AdditionalFreeItemsDto(List.of(
+                            ))
                     )
             );
         }
@@ -78,6 +85,9 @@ class PromotionServiceTest {
             productStock.addProduct(new PromotionProduct("테라", 1000,
                     new Promotion("프로모션", 2, 1, DateTimes.now(), DateTimes.now().plusDays(1)
                     )), 5);
+            productStock.addProduct(new PromotionProduct("과자", 1000,
+                    new Promotion("프로모션", 2, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    )), 8);
         }
 
         @ParameterizedTest
