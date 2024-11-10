@@ -5,6 +5,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import store.dto.ItemDto;
+import store.dto.PurchaseItemsDto;
+import store.service.ProductStockService;
 import store.validator.InputValidator;
 import store.view.ConsoleInput;
 import store.view.ConsoleOutput;
@@ -12,19 +14,24 @@ import store.view.ConsoleOutput;
 public class InputRetryUtil {
     final private ConsoleInput consoleInput;
     final private ConsoleOutput consoleOutput;
+    final private ProductStockService productStockService;
 
     // constructor for dependency injection
 
-    public InputRetryUtil(ConsoleInput consoleInput, ConsoleOutput consoleOutput) {
+    public InputRetryUtil(ConsoleInput consoleInput, ConsoleOutput consoleOutput,
+                          ProductStockService productStockService) {
         this.consoleInput = consoleInput;
         this.consoleOutput = consoleOutput;
+        this.productStockService = productStockService;
     }
 
     // public methods
 
     public List<ItemDto> getPurchaseItems() {
         return readValidatedInput(consoleInput::getPurchaseItems, InputParser::parseItems,
-                InputValidator::purchaseItemsValidate);
+                (items) -> productStockService.validateStocks(new PurchaseItemsDto(
+                        items
+                )));
     }
 
     public String askForAdditionalPromotion(String productName) {

@@ -43,10 +43,6 @@ public class StoreController {
 
                 List<ItemDto> purchaseItems = inputRetryUtil.getPurchaseItems();
 
-                productStockService.validateStocks(new PurchaseItemsDto(
-                        purchaseItems
-                ));
-
                 for (ItemDto item : promotionService.findAdditionalFreeItems(new PurchaseItemsDto(purchaseItems))
                         .products()) {
                     String answer = inputRetryUtil.askForAdditionalPromotion(item.name());

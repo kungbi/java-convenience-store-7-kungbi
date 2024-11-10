@@ -32,7 +32,7 @@ public class Application {
         PromotionService promotionService = new PromotionService(productStock);
         BasicMembership basicMembership = new BasicMembership();
         PurchaseService purchaseService = new PurchaseService(productStockService, promotionService, basicMembership);
-        InputRetryUtil inputRetryUtil = new InputRetryUtil(consoleInput, consoleOutput);
+        InputRetryUtil inputRetryUtil = new InputRetryUtil(consoleInput, consoleOutput, productStockService);
 
         StoreController storeController = new StoreController(
                 consoleInput,
