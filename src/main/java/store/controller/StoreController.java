@@ -36,36 +36,43 @@ public class StoreController {
     }
 
     public void run() {
-        try {
-            consoleOutput.printWelcomeMessage();
-            consoleOutput.printProductList(productStockService.getProductsInformation());
+        while (true) {
+            try {
+                consoleOutput.printWelcomeMessage();
+                consoleOutput.printProductList(productStockService.getProductsInformation());
 
-            List<ItemDto> purchaseItems = inputRetryUtil.getPurchaseItems();
+                List<ItemDto> purchaseItems = inputRetryUtil.getPurchaseItems();
 
-            productStockService.validateStocks(new PurchaseItemsDto(
-                    purchaseItems
-            ));
+                productStockService.validateStocks(new PurchaseItemsDto(
+                        purchaseItems
+                ));
 
-            for (ItemDto item : promotionService.findAdditionalFreeItems(new PurchaseItemsDto(purchaseItems))
-                    .products()) {
-                String answer = inputRetryUtil.askForAdditionalPromotion(item.name());
-                if (answer.equals("Y")) {
-                    purchaseItems = this.editItemDtos(purchaseItems, item.name(), item.quantity());
+                for (ItemDto item : promotionService.findAdditionalFreeItems(new PurchaseItemsDto(purchaseItems))
+                        .products()) {
+                    String answer = inputRetryUtil.askForAdditionalPromotion(item.name());
+                    if (answer.equals("Y")) {
+                        purchaseItems = this.editItemDtos(purchaseItems, item.name(), item.quantity());
+                    }
                 }
+
+                for (ItemDto item : promotionService.findExcludedPromotionItems(new PurchaseItemsDto(purchaseItems))
+                        .items()) {
+                    String answer = inputRetryUtil.askForFullPricePurchase(item.name(), item.quantity());
+                }
+
+                PurchaseResultDto purchase = purchaseService.purchase(new PurchaseRequestDto(
+                        purchaseItems, false
+                ));
+
+                consoleOutput.printPurchaseSummary(purchase);
+
+                String answer = inputRetryUtil.askForAdditionalPurchase();
+                if (answer.equals("N")) {
+                    break;
+                }
+            } catch (IllegalArgumentException error) {
+                consoleOutput.printException(error);
             }
-
-            for (ItemDto item : promotionService.findExcludedPromotionItems(new PurchaseItemsDto(purchaseItems))
-                    .items()) {
-                String answer = inputRetryUtil.askForFullPricePurchase(item.name(), item.quantity());
-            }
-
-            PurchaseResultDto purchase = purchaseService.purchase(new PurchaseRequestDto(
-                    purchaseItems, false
-            ));
-
-            consoleOutput.printPurchaseSummary(purchase);
-        } catch (IllegalArgumentException error) {
-            consoleOutput.printException(error);
         }
     }
 
