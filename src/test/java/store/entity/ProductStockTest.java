@@ -12,6 +12,7 @@ import store.entity.product.ProductType;
 import store.entity.product.PromotionProduct;
 import store.exception.ProductStockException;
 import store.exception.message.ProductStockExceptionMessage;
+import store.utils.Date.LocalDateTimes;
 
 class ProductStockTest {
 
@@ -61,7 +62,7 @@ class ProductStockTest {
 
             // when & then
             Product coke_same = new PromotionProduct("콜라", 4000, new Promotion(
-                    "프로모션", 2, 1, DateTimes.now(), DateTimes.now().plusDays(7)
+                    "프로모션", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(7)
             ));
             productStock.addProduct(coke_same, 3);
             // 에러발생 X

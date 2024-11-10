@@ -17,6 +17,7 @@ import store.entity.ProductStock;
 import store.entity.Promotion;
 import store.entity.product.CommonProduct;
 import store.entity.product.PromotionProduct;
+import store.utils.Date.LocalDateTimes;
 
 class PromotionServiceTest {
 
@@ -70,23 +71,23 @@ class PromotionServiceTest {
             productStock.addProduct(new CommonProduct("콜라", 1000), 10);
             productStock.addProduct(new CommonProduct("사이다", 1000), 10);
             productStock.addProduct(new PromotionProduct("사이다", 1000,
-                    new Promotion("프로모션", 1, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    new Promotion("프로모션", 1, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 3);
             productStock.addProduct(new PromotionProduct("펩시", 1000,
-                    new Promotion("프로모션", 1, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    new Promotion("프로모션", 1, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 3);
             productStock.addProduct(new CommonProduct("밀키스", 1000), 10);
             productStock.addProduct(new PromotionProduct("밀키스", 1000,
-                    new Promotion("프로모션", 1, 1, DateTimes.now().minusDays(2), DateTimes.now().minusDays(1)
+                    new Promotion("프로모션", 1, 1, LocalDateTimes.now().minusDays(2), LocalDateTimes.now().minusDays(1)
                     )), 3);
             productStock.addProduct(new PromotionProduct("카스", 1000,
-                    new Promotion("프로모션", 2, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    new Promotion("프로모션", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 6);
             productStock.addProduct(new PromotionProduct("테라", 1000,
-                    new Promotion("프로모션", 2, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    new Promotion("프로모션", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 5);
             productStock.addProduct(new PromotionProduct("과자", 1000,
-                    new Promotion("프로모션", 2, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    new Promotion("프로모션", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 8);
         }
 
@@ -131,20 +132,20 @@ class PromotionServiceTest {
             productStock.addProduct(new CommonProduct("콜라", 1000), 10);
             productStock.addProduct(new CommonProduct("사이다", 1000), 10);
             productStock.addProduct(new PromotionProduct("사이다", 1000,
-                    new Promotion("프로모션", 1, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    new Promotion("프로모션", 1, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 3);
             productStock.addProduct(new PromotionProduct("펩시", 1000,
-                    new Promotion("프로모션", 1, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    new Promotion("프로모션", 1, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 3);
             productStock.addProduct(new CommonProduct("밀키스", 1000), 10);
             productStock.addProduct(new PromotionProduct("밀키스", 1000,
-                    new Promotion("프로모션", 1, 1, DateTimes.now().minusDays(2), DateTimes.now().minusDays(1)
+                    new Promotion("프로모션", 1, 1, LocalDateTimes.now().minusDays(2), LocalDateTimes.now().minusDays(1)
                     )), 3);
             productStock.addProduct(new PromotionProduct("카스", 1000,
-                    new Promotion("프로모션", 2, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    new Promotion("프로모션", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 6);
             productStock.addProduct(new PromotionProduct("테라", 1000,
-                    new Promotion("프로모션", 2, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    new Promotion("프로모션", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 5);
         }
 
@@ -185,20 +186,20 @@ class PromotionServiceTest {
             productStock.addProduct(new CommonProduct("콜라", 1000), 10);
             productStock.addProduct(new CommonProduct("사이다", 1000), 10);
             productStock.addProduct(new PromotionProduct("사이다", 1000,
-                    new Promotion("프로모션", 1, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    new Promotion("프로모션", 1, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 3);
             productStock.addProduct(new PromotionProduct("펩시", 1000,
-                    new Promotion("프로모션", 1, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    new Promotion("프로모션", 1, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 3);
             productStock.addProduct(new CommonProduct("밀키스", 1000), 10);
             productStock.addProduct(new PromotionProduct("밀키스", 1000,
-                    new Promotion("프로모션", 1, 1, DateTimes.now().minusDays(2), DateTimes.now().minusDays(1)
+                    new Promotion("프로모션", 1, 1, LocalDateTimes.now().minusDays(2), LocalDateTimes.now().minusDays(1)
                     )), 3);
             productStock.addProduct(new PromotionProduct("카스", 1000,
-                    new Promotion("프로모션", 2, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    new Promotion("프로모션", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 6);
             productStock.addProduct(new PromotionProduct("테라", 1000,
-                    new Promotion("프로모션", 2, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    new Promotion("프로모션", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 5);
         }
 

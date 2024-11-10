@@ -19,6 +19,7 @@ import store.entity.membership.BasicMembership;
 import store.entity.product.CommonProduct;
 import store.entity.product.ProductType;
 import store.entity.product.PromotionProduct;
+import store.utils.Date.LocalDateTimes;
 
 class PurchaseServiceTest {
 
@@ -115,15 +116,15 @@ class PurchaseServiceTest {
             productStock = new ProductStock();
             productStock.addProduct(new CommonProduct("콜라", 1000), 5);
             productStock.addProduct(new PromotionProduct("콜라", 1000, new Promotion(
-                    "프로모션", 1, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    "프로모션", 1, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
             )), 5);
             productStock.addProduct(new CommonProduct("밀키스", 1000), 5);
             productStock.addProduct(new PromotionProduct("밀키스", 1000, new Promotion(
-                    "프로모션2", 2, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    "프로모션2", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
             )), 5);
             productStock.addProduct(new CommonProduct("카스", 2000), 5);
             productStock.addProduct(new PromotionProduct("카스", 1000, new Promotion(
-                    "프로모션2", 2, 1, DateTimes.now(), DateTimes.now().plusDays(1)
+                    "프로모션2", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
             )), 2);
             purchaseService = new PurchaseService(
                     new ProductStockService(productStock),

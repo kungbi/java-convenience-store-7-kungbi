@@ -4,6 +4,7 @@ import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDateTime;
 import store.exception.PromotionException;
 import store.exception.message.PromotionExceptionMessage;
+import store.utils.Date.LocalDateTimes;
 
 public class Promotion {
     private final String name;
@@ -74,7 +75,7 @@ public class Promotion {
     }
 
     public boolean isAvailable() {
-        LocalDateTime now = DateTimes.now();
+        LocalDateTime now = LocalDateTimes.now();
         return now.isAfter(startDate) && now.isBefore(endDate);
     }
 

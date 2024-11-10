@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import store.exception.PromotionException;
 import store.exception.message.PromotionExceptionMessage;
+import store.utils.Date.LocalDateTimes;
 
 class PromotionTest {
 
@@ -20,8 +21,8 @@ class PromotionTest {
             String name = "프로모션1";
             int buyQuantity = 2;
             int freeQuantity = 1;
-            LocalDateTime startDate = DateTimes.now();
-            LocalDateTime endDate = DateTimes.now().plusDays(7);
+            LocalDateTime startDate = LocalDateTimes.now();
+            LocalDateTime endDate = LocalDateTimes.now().plusDays(7);
 
             // when
             Promotion promotion = new Promotion(name, buyQuantity, freeQuantity, startDate, endDate);
@@ -38,8 +39,8 @@ class PromotionTest {
             String name = null;
             int buyQuantity = 2;
             int freeQuantity = 1;
-            LocalDateTime startDate = DateTimes.now();
-            LocalDateTime endDate = DateTimes.now().plusDays(7);
+            LocalDateTime startDate = LocalDateTimes.now();
+            LocalDateTime endDate = LocalDateTimes.now().plusDays(7);
 
             // when
             PromotionException exception = Assertions.assertThrows(PromotionException.class,
@@ -55,8 +56,8 @@ class PromotionTest {
             String name = "";
             int buyQuantity = 2;
             int freeQuantity = 1;
-            LocalDateTime startDate = DateTimes.now();
-            LocalDateTime endDate = DateTimes.now().plusDays(7);
+            LocalDateTime startDate = LocalDateTimes.now();
+            LocalDateTime endDate = LocalDateTimes.now().plusDays(7);
 
             // when
             PromotionException exception = Assertions.assertThrows(PromotionException.class,
@@ -72,8 +73,8 @@ class PromotionTest {
             String name = "123456789012345678901234567890123456789012345678901"; // 51 characters
             int buyQuantity = 2;
             int freeQuantity = 1;
-            LocalDateTime startDate = DateTimes.now();
-            LocalDateTime endDate = DateTimes.now().plusDays(7);
+            LocalDateTime startDate = LocalDateTimes.now();
+            LocalDateTime endDate = LocalDateTimes.now().plusDays(7);
 
             // when
             PromotionException exception = Assertions.assertThrows(PromotionException.class,
@@ -91,7 +92,7 @@ class PromotionTest {
             int buyQuantity = 2;
             int freeQuantity = 1;
             LocalDateTime startDate = null;
-            LocalDateTime endDate = DateTimes.now().plusDays(7);
+            LocalDateTime endDate = LocalDateTimes.now().plusDays(7);
 
             // when
             PromotionException exception = Assertions.assertThrows(PromotionException.class,
@@ -107,7 +108,7 @@ class PromotionTest {
             String name = "프로모션1";
             int buyQuantity = 2;
             int freeQuantity = 1;
-            LocalDateTime startDate = DateTimes.now();
+            LocalDateTime startDate = LocalDateTimes.now();
             LocalDateTime endDate = null;
 
             // when
@@ -124,8 +125,8 @@ class PromotionTest {
             String name = "프로모션1";
             int buyQuantity = 0;
             int freeQuantity = 10;
-            LocalDateTime startDate = DateTimes.now();
-            LocalDateTime endDate = DateTimes.now().plusDays(7);
+            LocalDateTime startDate = LocalDateTimes.now();
+            LocalDateTime endDate = LocalDateTimes.now().plusDays(7);
 
             // when
             PromotionException exception = Assertions.assertThrows(PromotionException.class,
@@ -142,8 +143,8 @@ class PromotionTest {
             String name = "프로모션1";
             int buyQuantity = 10;
             int freeQuantity = 0;
-            LocalDateTime startDate = DateTimes.now();
-            LocalDateTime endDate = DateTimes.now().plusDays(7);
+            LocalDateTime startDate = LocalDateTimes.now();
+            LocalDateTime endDate = LocalDateTimes.now().plusDays(7);
 
             // when
             PromotionException exception = Assertions.assertThrows(PromotionException.class,
@@ -159,8 +160,8 @@ class PromotionTest {
             String name = "프로모션1";
             int buyQuantity = 2;
             int freeQuantity = 1;
-            LocalDateTime startDate = DateTimes.now().plusDays(7);
-            LocalDateTime endDate = DateTimes.now();
+            LocalDateTime startDate = LocalDateTimes.now().plusDays(7);
+            LocalDateTime endDate = LocalDateTimes.now();
 
             // when
             PromotionException exception = Assertions.assertThrows(PromotionException.class,
@@ -182,8 +183,8 @@ class PromotionTest {
             String name = "프로모션1";
             int buyQuantity = 2;
             int freeQuantity = 1;
-            LocalDateTime startDate = DateTimes.now().minusDays(1);
-            LocalDateTime endDate = DateTimes.now().plusDays(7);
+            LocalDateTime startDate = LocalDateTimes.now().minusDays(1);
+            LocalDateTime endDate = LocalDateTimes.now().plusDays(7);
             Promotion promotion = new Promotion(name, buyQuantity, freeQuantity, startDate, endDate);
 
             // when
