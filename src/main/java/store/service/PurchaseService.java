@@ -33,7 +33,7 @@ public class PurchaseService {
         List<ItemDto> freeItems = new ArrayList<>();
         List<PurchaseResultItemDto> purchaseItems = new ArrayList<>();
         for (ItemDto product : purchaseInputDto.products()) {
-            if (productStockService.getProduct(product.name(), ProductType.PROMOTION).getType()
+            if (productStockService.isExistProductWithType(product.name(), ProductType.PROMOTION) && productStockService.getProduct(product.name(), ProductType.PROMOTION).getType()
                 != ProductType.PROMOTION) {
                 continue;
             }

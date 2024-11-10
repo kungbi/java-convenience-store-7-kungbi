@@ -13,9 +13,5 @@ public record ProductFieldsDto(String name, int price, int quantity, String prom
         if (quantity <= 0) {
             throw new IllegalArgumentException("Invalid product quantity");
         }
-
-        if (promotionName == null || promotionName.isBlank()) {
-            throw new IllegalArgumentException("Invalid promotion name");
-        }
     }
 }
