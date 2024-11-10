@@ -139,8 +139,11 @@
 # 기능 구현 목록
 
 - [ ] 상품 목록 파일 및 프로모션 목록 파일 읽기 기능.
-- [ ] 상품 entity
-- [ ] 상품을 관리하는 재고관리 entity
-- [ ] 프로모션을 관리하는 entity
-- [ ] 멤버십 할인 entity
-- [ ] 영수증 entity
+- [x] 상품 entity
+- [x] 상품을 관리하는 재고관리 entity
+- [x] 프로모션을 관리하는 entity
+- [x] 멤버십 할인 entity
+
+- [x] 상품 service
+- [x] 프로모션 service
+- [x] 구매 service
