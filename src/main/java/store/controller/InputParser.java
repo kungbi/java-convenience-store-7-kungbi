@@ -8,8 +8,8 @@ import store.dto.ItemDto;
 
 public class InputParser {
     public static List<ItemDto> parseItems(String input) {
+        validate(input);
         List<ItemDto> purchaseItems = new ArrayList<>();
-
         Pattern pattern = Pattern.compile("\\[(.+)-(\\d+)\\]");
         for (String token : input.split(",")) {
             Matcher matcher = pattern.matcher(token);
@@ -20,5 +20,26 @@ public class InputParser {
             }
         }
         return purchaseItems;
+    }
+
+    public static int parseInteger(String input) {
+        validate(input);
+        return parseSingleInteger(input);
+    }
+
+    // private methods
+
+    private static void validate(String input) {
+        if (input == null || input.isBlank()) {
+            throw new IllegalArgumentException("최소 한 개 이상의 숫자를 입력해주세요.");
+        }
+    }
+
+    private static int parseSingleInteger(String input) {
+        try {
+            return Integer.parseInt(input.strip());
+        } catch (NumberFormatException error) {
+            throw new IllegalArgumentException("숫자만 입력해주세요.");
+        }
     }
 }

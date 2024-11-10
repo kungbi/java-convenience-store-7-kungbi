@@ -1,6 +1,7 @@
 package store;
 
 import java.io.IOException;
+import store.controller.InputRetryUtil;
 import store.controller.StoreController;
 import store.entity.ProductStock;
 import store.entity.PromotionManagement;
@@ -31,14 +32,15 @@ public class Application {
         PromotionService promotionService = new PromotionService(productStock);
         BasicMembership basicMembership = new BasicMembership();
         PurchaseService purchaseService = new PurchaseService(productStockService, promotionService, basicMembership);
-        new PurchaseService(productStockService, promotionService, basicMembership);
+        InputRetryUtil inputRetryUtil = new InputRetryUtil(consoleInput, consoleOutput);
 
         StoreController storeController = new StoreController(
                 consoleInput,
                 consoleOutput,
                 productStockService,
                 promotionService,
-                purchaseService
+                purchaseService,
+                inputRetryUtil
         );
 
         storeController.run();

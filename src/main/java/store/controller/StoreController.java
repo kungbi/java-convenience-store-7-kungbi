@@ -18,18 +18,21 @@ public class StoreController {
     private final ProductStockService productStockService;
     private final PromotionService promotionService;
     private final PurchaseService purchaseService;
+    private final InputRetryUtil inputRetryUtil;
 
     public StoreController(
             ConsoleInput consoleInput,
             ConsoleOutput consoleOutput,
             ProductStockService productStockService,
             PromotionService promotionService,
-            PurchaseService purchaseService) {
+            PurchaseService purchaseService,
+            InputRetryUtil inputRetryUtil) {
         this.consoleInput = consoleInput;
         this.consoleOutput = consoleOutput;
         this.productStockService = productStockService;
         this.promotionService = promotionService;
         this.purchaseService = purchaseService;
+        this.inputRetryUtil = inputRetryUtil;
     }
 
     public void run() {
@@ -37,23 +40,23 @@ public class StoreController {
             consoleOutput.printWelcomeMessage();
             consoleOutput.printProductList(productStockService.getProductsInformation());
 
-            String purchaseItemsString = consoleInput.getPurchaseItems();
-
-            List<ItemDto> purchaseItems = InputParser.parseItems(purchaseItemsString);
+            List<ItemDto> purchaseItems = inputRetryUtil.getPurchaseItems();
 
             productStockService.validateStocks(new PurchaseItemsDto(
                     purchaseItems
             ));
 
-            for (ItemDto item : promotionService.findAdditionalFreeItems(new PurchaseItemsDto(purchaseItems)).products()) {
-                String answer = consoleInput.askForAdditionalPromotion(item.name());
+            for (ItemDto item : promotionService.findAdditionalFreeItems(new PurchaseItemsDto(purchaseItems))
+                    .products()) {
+                String answer = inputRetryUtil.askForAdditionalPromotion(item.name());
                 if (answer.equals("Y")) {
                     purchaseItems = this.editItemDtos(purchaseItems, item.name(), item.quantity());
                 }
             }
 
-            for (ItemDto item : promotionService.findExcludedPromotionItems(new PurchaseItemsDto(purchaseItems)).items()) {
-                consoleInput.askForFullPricePurchase(item.name(), item.quantity());
+            for (ItemDto item : promotionService.findExcludedPromotionItems(new PurchaseItemsDto(purchaseItems))
+                    .items()) {
+                String answer = inputRetryUtil.askForFullPricePurchase(item.name(), item.quantity());
             }
 
             PurchaseResultDto purchase = purchaseService.purchase(new PurchaseRequestDto(
