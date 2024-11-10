@@ -1,9 +1,14 @@
 package store.service;
 
 import java.util.ArrayList;
+import java.util.List;
+import store.dto.AdditionalFreeItemsDto;
+import store.dto.ExcludedPromotionItemsDto;
+import store.dto.ItemDto;
 import store.dto.PurchaseItemDto;
 import store.dto.PurchaseItemsDto;
 import store.entity.ProductStock;
+import store.entity.Promotion;
 import store.entity.product.ProductType;
 import store.entity.product.PromotionProduct;
 
@@ -14,31 +19,38 @@ public class PromotionService {
         this.productStock = productStock;
     }
 
-    public PurchaseItemsDto findAdditionalFreeItems(PurchaseItemsDto purchaseItemsDto) {
-        ArrayList<PurchaseItemDto> freePromotionItems = new ArrayList<>();
+    public AdditionalFreeItemsDto findAdditionalFreeItems(PurchaseItemsDto purchaseItemsDto) {
+        List<ItemDto> freePromotionItems = new ArrayList<>();
         for (PurchaseItemDto product : purchaseItemsDto.products()) {
-            // 프로모션 상품이 있을 경우,
-            if (productStock.isExistProductWithType(product.name(), ProductType.PROMOTION)) {
-                // 프로모션 상품이 존재하고,
-                // 그 상품이 PromotionProduct 타입이라면,
-                if (productStock.getProduct(product.name(),
-                        ProductType.PROMOTION) instanceof PromotionProduct promotionProduct
-                    && promotionProduct.isAvailable()) {
-                    // 그 상품이 사용 가능한 상태라면,
-
-                    int additionalFreeItemCount = promotionProduct.getPromotion()
-                            .getAdditionalFreeItemCount(product.quantity());
-
-                    int productQuantity = productStock.getProductQuantity(product.name(), ProductType.PROMOTION);
-                    if (product.quantity() + additionalFreeItemCount <= productQuantity) {
-                        freePromotionItems.add(new PurchaseItemDto(product.name(), additionalFreeItemCount));
-                    }
-                }
-            }
+            extracted(product, freePromotionItems);
         }
-
-        return new PurchaseItemsDto(freePromotionItems);
+        return new AdditionalFreeItemsDto(freePromotionItems);
     }
+
+    public ExcludedPromotionItemsDto findExcludedPromotionItems(PurchaseItemsDto purchaseItemsDto) {
+        List<ItemDto> excludedPromotionItems = new ArrayList<>();
+        for (PurchaseItemDto product : purchaseItemsDto.products()) {
+            if (!productStock.isExistProductWithType(product.name(), ProductType.PROMOTION)) {
+                continue;
+            }
+
+            Promotion promotion = ((PromotionProduct) productStock.getProduct(product.name(),
+                    ProductType.PROMOTION)).getPromotion();
+            if (!promotion.isAvailable()) {
+                continue;
+            }
+
+            if (!productStock.isExistProductWithType(product.name(), ProductType.PROMOTION)) {
+                continue;
+            }
+
+            int excludedPromotionCount = promotion.calculateExcludedPromotionCount(product.quantity(),
+                    productStock.getProductQuantity(product.name(), ProductType.PROMOTION));
+            excludedPromotionItems.add(new ItemDto(product.name(), excludedPromotionCount));
+        }
+        return new ExcludedPromotionItemsDto(excludedPromotionItems);
+    }
+
 
     public int calculateFreeCount(PurchaseItemDto purchaseItemDto) {
         if (!productStock.isExistProductWithType(purchaseItemDto.name(), ProductType.PROMOTION)) {
@@ -52,5 +64,24 @@ public class PromotionService {
         }
 
         return promotionProduct.getPromotion().calculateFreeCount(purchaseItemDto.quantity());
+    }
+
+    private void extracted(PurchaseItemDto product, List<ItemDto> freePromotionItems) {
+        if (!productStock.isExistProductWithType(product.name(), ProductType.PROMOTION)) {
+            return;
+        }
+
+        Promotion promotion = ((PromotionProduct) productStock.getProduct(product.name(),
+                ProductType.PROMOTION)).getPromotion();
+
+        if (!promotion.isAvailable()) {
+            return;
+        }
+
+        int additionalFreeItemCount = promotion.getAdditionalFreeItemCount(product.quantity());
+        int productQuantity = productStock.getProductQuantity(product.name(), ProductType.PROMOTION);
+        if (product.quantity() + additionalFreeItemCount <= productQuantity) {
+            freePromotionItems.add(new ItemDto(product.name(), additionalFreeItemCount));
+        }
     }
 }

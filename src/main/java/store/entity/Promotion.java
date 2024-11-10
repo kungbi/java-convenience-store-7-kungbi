@@ -51,8 +51,8 @@ public class Promotion {
         return buyQuantity;
     }
 
-    public int getAdditionalFreeItemCount(int quantity) {
-        int remain = quantity % (buyQuantity + freeQuantity);
+    public int getAdditionalFreeItemCount(int purchaseQuantity) {
+        int remain = purchaseQuantity % (buyQuantity + freeQuantity);
         if (remain == buyQuantity) {
             return freeQuantity;
         }
@@ -61,6 +61,11 @@ public class Promotion {
 
     public int calculateFreeCount(int quantity) {
         return quantity / (buyQuantity + freeQuantity) * freeQuantity;
+    }
+
+    public int calculateExcludedPromotionCount(int purchaseQuantity, int promotionStock) {
+        purchaseQuantity = Math.min(purchaseQuantity, promotionStock);
+        return purchaseQuantity % (buyQuantity + freeQuantity);
     }
 
     public int getFreeQuantity() {
