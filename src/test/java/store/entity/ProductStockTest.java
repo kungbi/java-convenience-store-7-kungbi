@@ -3,7 +3,7 @@ package store.entity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.time.LocalDateTime;
+import camp.nextstep.edu.missionutils.DateTimes;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import store.entity.product.CommonProduct;
@@ -61,7 +61,7 @@ class ProductStockTest {
 
             // when & then
             Product coke_same = new PromotionProduct("콜라", 4000, new Promotion(
-                    "프로모션", 2, 1, LocalDateTime.now(), LocalDateTime.now().plusDays(7)
+                    "프로모션", 2, 1, DateTimes.now(), DateTimes.now().plusDays(7)
             ));
             productStock.addProduct(coke_same, 3);
             // 에러발생 X
@@ -111,7 +111,6 @@ class ProductStockTest {
             // when
             ProductStockException exception = assertThrows(ProductStockException.class,
                     () -> productStock.getProductQuantity(null, ProductType.COMMON));
-
 
             // then
             assertEquals(ProductStockExceptionMessage.NULL_NAME.getMessage(), exception.getMessage());

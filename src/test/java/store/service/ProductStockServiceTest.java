@@ -1,5 +1,6 @@
 package store.service;
 
+import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
@@ -108,14 +109,14 @@ class ProductStockServiceTest {
             productStock.addProduct(new CommonProduct("콜라", 1000), 10);
             productStock.addProduct(new CommonProduct("사이다", 1000), 10);
             productStock.addProduct(new PromotionProduct("사이다", 1000,
-                    new Promotion("프로모션", 1, 1, LocalDateTime.now(), LocalDateTime.now().plusDays(1)
+                    new Promotion("프로모션", 1, 1, DateTimes.now(), DateTimes.now().plusDays(1)
                     )), 3);
             productStock.addProduct(new PromotionProduct("펩시", 1000,
-                    new Promotion("프로모션", 1, 1, LocalDateTime.now(), LocalDateTime.now().plusDays(1)
+                    new Promotion("프로모션", 1, 1, DateTimes.now(), DateTimes.now().plusDays(1)
                     )), 3);
             productStock.addProduct(new CommonProduct("밀키스", 1000), 10);
             productStock.addProduct(new PromotionProduct("밀키스", 1000,
-                    new Promotion("프로모션", 1, 1, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1)
+                    new Promotion("프로모션", 1, 1, DateTimes.now().minusDays(2), DateTimes.now().minusDays(1)
                     )), 3);
         }
 
@@ -154,14 +155,14 @@ class ProductStockServiceTest {
             productStock.addProduct(new CommonProduct("콜라", 1000), 10);
             productStock.addProduct(new CommonProduct("사이다", 1000), 10);
             productStock.addProduct(new PromotionProduct("사이다", 1000,
-                    new Promotion("프로모션", 1, 1, LocalDateTime.now(), LocalDateTime.now().plusDays(1)
+                    new Promotion("프로모션", 1, 1, DateTimes.now(), DateTimes.now().plusDays(1)
                     )), 3);
             productStock.addProduct(new PromotionProduct("펩시", 1000,
-                    new Promotion("프로모션", 1, 1, LocalDateTime.now(), LocalDateTime.now().plusDays(1)
+                    new Promotion("프로모션", 1, 1, DateTimes.now(), DateTimes.now().plusDays(1)
                     )), 3);
             productStock.addProduct(new CommonProduct("밀키스", 1000), 10);
             productStock.addProduct(new PromotionProduct("밀키스", 1000,
-                    new Promotion("프로모션", 1, 1, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1)
+                    new Promotion("프로모션", 1, 1, DateTimes.now().minusDays(2), DateTimes.now().minusDays(1)
                     )), 3);
         }
 

@@ -1,5 +1,6 @@
 package store.entity;
 
+import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDateTime;
 import store.exception.PromotionException;
 import store.exception.message.PromotionExceptionMessage;
@@ -73,7 +74,7 @@ public class Promotion {
     }
 
     public boolean isAvailable() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = DateTimes.now();
         return now.isAfter(startDate) && now.isBefore(endDate);
     }
 }

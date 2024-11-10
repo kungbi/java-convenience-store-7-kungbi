@@ -1,7 +1,6 @@
 package store.service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import camp.nextstep.edu.missionutils.DateTimes;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
@@ -26,18 +25,6 @@ class PurchaseServiceTest {
     class 상품_구매_테스트_ONLY_일반상품 {
         ProductStock productStock;
         PurchaseService purchaseService;
-
-        static class StockExpect {
-            String name;
-            int quantity;
-            ProductType type;
-
-            public StockExpect(String name, int quantity, ProductType type) {
-                this.name = name;
-                this.quantity = quantity;
-                this.type = type;
-            }
-        }
 
         static Stream<Arguments> 정상__상품_구매_테스트_케이스() {
             return Stream.of(
@@ -127,15 +114,15 @@ class PurchaseServiceTest {
             productStock = new ProductStock();
             productStock.addProduct(new CommonProduct("콜라", 1000), 5);
             productStock.addProduct(new PromotionProduct("콜라", 1000, new Promotion(
-                    "프로모션", 1, 1, LocalDateTime.now(), LocalDateTime.now().plusDays(1)
+                    "프로모션", 1, 1, DateTimes.now(), DateTimes.now().plusDays(1)
             )), 5);
             productStock.addProduct(new CommonProduct("밀키스", 1000), 5);
             productStock.addProduct(new PromotionProduct("밀키스", 1000, new Promotion(
-                    "프로모션2", 2, 1, LocalDateTime.now(), LocalDateTime.now().plusDays(1)
+                    "프로모션2", 2, 1, DateTimes.now(), DateTimes.now().plusDays(1)
             )), 5);
             productStock.addProduct(new CommonProduct("카스", 2000), 5);
             productStock.addProduct(new PromotionProduct("카스", 1000, new Promotion(
-                    "프로모션2", 2, 1, LocalDateTime.now(), LocalDateTime.now().plusDays(1)
+                    "프로모션2", 2, 1, DateTimes.now(), DateTimes.now().plusDays(1)
             )), 2);
             purchaseService = new PurchaseService(
                     new ProductStockService(productStock),
@@ -158,6 +145,18 @@ class PurchaseServiceTest {
 
             for (StockExpect expect : stockExpect) {
                 Assertions.assertEquals(expect.quantity, productStock.getProductQuantity(expect.name, expect.type));
+            }
+        }
+
+        static class StockExpect {
+            String name;
+            int quantity;
+            ProductType type;
+
+            public StockExpect(String name, int quantity, ProductType type) {
+                this.name = name;
+                this.quantity = quantity;
+                this.type = type;
             }
         }
     }
