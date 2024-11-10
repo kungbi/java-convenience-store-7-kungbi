@@ -1,8 +1,12 @@
 package store.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import store.dto.ItemDto;
+import store.dto.ProductInfoDto;
 import store.dto.PurchaseItemsDto;
 import store.entity.ProductStock;
+import store.entity.Promotion;
 import store.entity.product.Product;
 import store.entity.product.ProductType;
 import store.entity.product.PromotionProduct;
@@ -72,6 +76,26 @@ public class ProductStockService {
 
     public Product getProduct(String name, ProductType type) {
         return productStock.getProduct(name, type);
+    }
+
+    public List<ProductInfoDto> getProductsInformation() {
+        List<ProductInfoDto> productInfoDtos = new ArrayList<>();
+
+        List<Product> products = productStock.getProducts();
+        for (Product product : products) {
+            int quantity = productStock.getProductQuantityByUuid(product.getUuid());
+            if (product.getType() == ProductType.COMMON) {
+                productInfoDtos.add(new ProductInfoDto(product.getName(), product.getPrice(), quantity, null));
+            }
+
+            if (product.getType() == ProductType.PROMOTION) {
+                Promotion promotion = ((PromotionProduct) productStock.getProduct(product.getName(),
+                        ProductType.PROMOTION)).getPromotion();
+                productInfoDtos.add(new ProductInfoDto(product.getName(), product.getPrice(), quantity,
+                        promotion.getName()));
+            }
+        }
+        return productInfoDtos;
     }
 
     public boolean isExistProductWithType(String name, ProductType type) {
