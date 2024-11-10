@@ -47,6 +47,10 @@ public class ProductStock {
         return products.get(name).containsKey(type);
     }
 
+    public int getProductQuantityByUuid(String uuid) {
+        return stocks.get(uuid);
+    }
+
     public boolean isSufficientStock(String name, ProductType type, int quantity) {
         if (name == null) {
             throw new ProductStockException(ProductStockExceptionMessage.NULL_NAME);
