@@ -64,4 +64,9 @@ public class ConsoleOutput {
                 "-" + currencyFormat.format(purchaseResult.membershipDiscountAmount()));
         System.out.printf("%-10s %25s\n", "내실돈", currencyFormat.format(purchaseResult.paymentAmount()));
     }
+
+    public void printException(Exception e) {
+        System.out.println(e.getMessage());
+    }
+
 }
