@@ -53,7 +53,7 @@ public class ProductStockService {
         boolean isPromotionStockValid = validatePromotionStock(productDto);
         boolean isCommonStockValid = validateCommonStock(productDto);
 
-        if (!isPromotionStockValid || !isCommonStockValid) {
+        if (!isPromotionStockValid && !isCommonStockValid) {
             throw new ProductStockException(ProductStockExceptionMessage.INSUFFICIENT_STOCK);
         }
     }
@@ -73,23 +73,43 @@ public class ProductStockService {
 
     private boolean validatePromotionStock(PurchaseItemDto productDto) {
         if (!productStock.isExistProductWithType(productDto.name(), ProductType.PROMOTION)) {
+            return false;
+        }
+
+        if (productStock.getProduct(productDto.name(),
+                ProductType.PROMOTION) instanceof PromotionProduct promotionProduct
+            && !promotionProduct.getPromotion().isAvailable()) {
+            return false;
+        }
+
+        if (productStock.isSufficientStock(productDto.name(), ProductType.PROMOTION, productDto.quantity())) {
             return true;
         }
 
-        PromotionProduct promotionProduct = (PromotionProduct) productStock.getProduct(productDto.name(),
-                ProductType.PROMOTION);
-        if (!promotionProduct.getPromotion().isAvailable()) {
+        if (!productStock.isExistProductWithType(productDto.name(), ProductType.COMMON)) {
+            return false;
+        }
+
+        if (productStock.getProductQuantity(productDto.name(), ProductType.PROMOTION)
+            + productStock.getProductQuantity(productDto.name(), ProductType.COMMON) >= productDto.quantity()) {
             return true;
         }
 
-        return productStock.isSufficientStock(productDto.name(), ProductType.PROMOTION, productDto.quantity()) ||
-               (productStock.isExistProductWithType(productDto.name(), ProductType.COMMON) &&
-                productStock.isSufficientStock(productDto.name(), ProductType.COMMON, productDto.quantity()));
+        if (productStock.isSufficientStock(productDto.name(), ProductType.COMMON, productDto.quantity())) {
+            return true;
+        }
+
+        return false;
     }
 
     private boolean validateCommonStock(PurchaseItemDto productDto) {
-        return !productStock.isExistProductWithType(productDto.name(), ProductType.COMMON) ||
-               productStock.isSufficientStock(productDto.name(), ProductType.COMMON, productDto.quantity());
+        if (!productStock.isExistProductWithType(productDto.name(), ProductType.COMMON)) {
+            return false;
+        }
+        if (!productStock.isSufficientStock(productDto.name(), ProductType.COMMON, productDto.quantity())) {
+            return false;
+        }
+        return true;
     }
 }
 
