@@ -20,13 +20,9 @@ public class StoreController {
     private final PurchaseService purchaseService;
     private final InputRetryUtil inputRetryUtil;
 
-    public StoreController(
-            ConsoleInput consoleInput,
-            ConsoleOutput consoleOutput,
-            ProductStockService productStockService,
-            PromotionService promotionService,
-            PurchaseService purchaseService,
-            InputRetryUtil inputRetryUtil) {
+    public StoreController(ConsoleInput consoleInput, ConsoleOutput consoleOutput,
+                           ProductStockService productStockService, PromotionService promotionService,
+                           PurchaseService purchaseService, InputRetryUtil inputRetryUtil) {
         this.consoleInput = consoleInput;
         this.consoleOutput = consoleOutput;
         this.productStockService = productStockService;
@@ -37,34 +33,52 @@ public class StoreController {
 
     public void run() {
         while (true) {
-            try {
-                startPurchaseProcess();
-                boolean answer = inputRetryUtil.askForAdditionalPurchase();
-                if (!answer) {
-                    break;
-                }
-            } catch (IllegalArgumentException error) {
-                consoleOutput.printException(error);
+            if (processPurchaseLoop()) {
+                break;
             }
         }
     }
 
-    private void startPurchaseProcess() {
-        consoleOutput.printWelcomeMessage();
-        consoleOutput.printProductList(productStockService.getProductsInformation());
+    // private methods
 
+    private boolean processPurchaseLoop() {
+        try {
+            startPurchaseProcess();
+            boolean answer = inputRetryUtil.askForAdditionalPurchase();
+            if (!answer) {
+                return true;
+            }
+        } catch (IllegalArgumentException error) {
+            consoleOutput.printException(error);
+        }
+        return false;
+    }
+
+    private void startPurchaseProcess() {
+        displayProducts();
         List<ItemDto> purchaseItems = inputRetryUtil.getPurchaseItems();
         purchaseItems = applyAdditionalPromotions(purchaseItems);
+        if (excludedPromotionItemInform(purchaseItems)) {
+            return;
+        }
+        boolean membership = inputRetryUtil.askForMembershipDiscount();
+        PurchaseResultDto purchaseResult = purchaseService.purchase(new PurchaseRequestDto(purchaseItems, membership));
+        consoleOutput.printPurchaseSummary(purchaseResult);
+    }
+
+    private void displayProducts() {
+        consoleOutput.printWelcomeMessage();
+        consoleOutput.printProductList(productStockService.getProductsInformation());
+    }
+
+    private boolean excludedPromotionItemInform(List<ItemDto> purchaseItems) {
         for (ItemDto item : promotionService.findExcludedPromotionItems(new PurchaseItemsDto(purchaseItems)).items()) {
             boolean answer = inputRetryUtil.askForFullPricePurchase(item.name(), item.quantity());
             if (!answer) {
-                return;
+                return true;
             }
         }
-        boolean membership = inputRetryUtil.askForMembershipDiscount();
-
-        PurchaseResultDto purchaseResult = purchaseService.purchase(new PurchaseRequestDto(purchaseItems, membership));
-        consoleOutput.printPurchaseSummary(purchaseResult);
+        return false;
     }
 
     private List<ItemDto> applyAdditionalPromotions(List<ItemDto> purchaseItems) {
