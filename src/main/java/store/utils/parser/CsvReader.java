@@ -15,13 +15,11 @@ public class CsvReader implements Reader {
         }
         this.reader = reader;
         if (header) {
-            try {
-                this.reader.readLine();
-            } catch (IOException error) {
-                throw new ReaderException(ReaderExceptionMessage.READ_LINE_FAILED, error);
-            }
+            skipHeader();
         }
     }
+
+    // public methods
 
     @Override
     public List<String> readLine() throws IOException {
@@ -36,5 +34,15 @@ public class CsvReader implements Reader {
     @Override
     public void close() throws IOException {
         this.reader.close();
+    }
+
+    // private methods
+
+    private void skipHeader() {
+        try {
+            this.reader.readLine();
+        } catch (IOException error) {
+            throw new ReaderException(ReaderExceptionMessage.READ_LINE_FAILED, error);
+        }
     }
 }
