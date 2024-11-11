@@ -2,6 +2,8 @@ package store.dto;
 
 
 import java.util.List;
+import store.exception.DtoException;
+import store.exception.message.DtoExceptionMessage;
 
 public record PurchaseResultDto(
         List<PurchaseResultItemDto> purchaseItems,
@@ -13,22 +15,22 @@ public record PurchaseResultDto(
 ) {
     public PurchaseResultDto {
         if (purchaseItems == null) {
-            throw new IllegalArgumentException("purchaseItems must be provided");
+            throw new DtoException(DtoExceptionMessage.ITEMS_NULL_OR_EMPTY);
         }
         if (freeItems == null) {
-            throw new IllegalArgumentException("freeItems must be provided");
+            throw new DtoException(DtoExceptionMessage.FREE_ITEMS_NULL);
         }
         if (totalAmount < 0) {
-            throw new IllegalArgumentException("totalAmount must be greater than or equal to 0");
+            throw new DtoException(DtoExceptionMessage.TOTAL_PRICE_LESS_THAN_ZERO);
         }
         if (promotionDiscountAmount < 0) {
-            throw new IllegalArgumentException("promotionDiscountAmount must be greater than or equal to 0");
+            throw new DtoException(DtoExceptionMessage.PROMOTION_DISCOUNT_LESS_THAN_ZERO);
         }
         if (membershipDiscountAmount < 0) {
-            throw new IllegalArgumentException("membershipDiscountAmount must be greater than or equal to 0");
+            throw new DtoException(DtoExceptionMessage.MEMBERSHIP_DISCOUNT_LESS_THAN_ZERO);
         }
         if (paymentAmount < 0) {
-            throw new IllegalArgumentException("paymentAmount must be greater than or equal to 0");
+            throw new DtoException(DtoExceptionMessage.PAYMENT_AMOUNT_LESS_THAN_ZERO);
         }
     }
 
@@ -71,7 +73,8 @@ public record PurchaseResultDto(
         }
 
         public PurchaseResultDto build() {
-            return new PurchaseResultDto(purchaseItems, freeItems, totalAmount, discountAmount, membershipDiscountAmount, paymentAmount);
+            return new PurchaseResultDto(purchaseItems, freeItems, totalAmount, discountAmount,
+                    membershipDiscountAmount, paymentAmount);
         }
     }
 }
