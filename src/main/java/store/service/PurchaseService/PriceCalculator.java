@@ -1,5 +1,6 @@
 package store.service.PurchaseService;
 
+import java.util.List;
 import store.dto.ItemDto;
 import store.entity.product.Product;
 import store.entity.product.ProductType;
@@ -39,6 +40,15 @@ public class PriceCalculator {
         }
         return 0;
     }
+
+    public int calculateItemsTotalPrice(List<ItemDto> items) {
+        int totalPrice = 0;
+        for (ItemDto item : items) {
+            totalPrice += calculateItemPrice(item);
+        }
+        return totalPrice;
+    }
+
 
     // private method
 

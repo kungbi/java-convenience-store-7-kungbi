@@ -33,9 +33,10 @@ public class PurchaseService {
         List<ItemDto> freeItems = new ArrayList<>();
         List<PurchaseResultItemDto> purchaseItems = calculatePurchaseItems(purchaseInputDto, freeItems);
 
-        int totalAmount = calculateItemsTotalPrice(purchaseInputDto.products());
+        int totalAmount = priceCalculator.calculateItemsTotalPrice(purchaseInputDto.products());
         int promotionDiscountAmount = discountCalculator.calculatePromotionDiscountAmount(freeItems);
-        int membershipDiscountAmount = discountCalculator.calculateMembershipDiscountAmount(purchaseInputDto, totalAmount);
+        int membershipDiscountAmount = discountCalculator.calculateMembershipDiscountAmount(purchaseInputDto,
+                totalAmount);
         this.productStockService.reduceStocks(new PurchaseItemsDto(purchaseInputDto.products()));
         return createPurchaseResultDto(purchaseItems, freeItems, promotionDiscountAmount, membershipDiscountAmount,
                 totalAmount);
@@ -56,9 +57,7 @@ public class PurchaseService {
         if (validateProduct(product)) {
             return;
         }
-        ItemDto excludedPromotionItem = promotionService.findExcludedPromotionItem(product);
-        int freeCount = promotionService.calculateFreeCount(
-                new ItemDto(product.name(), product.quantity() - excludedPromotionItem.quantity()));
+        int freeCount = getFreeCount(product);
         if (freeCount > 0) {
             freeItems.add(new ItemDto(product.name(), freeCount));
         }
@@ -66,20 +65,18 @@ public class PurchaseService {
                 priceCalculator.calculateItemPrice(product)));
     }
 
+    private int getFreeCount(ItemDto product) {
+        ItemDto excludedPromotionItem = promotionService.findExcludedPromotionItem(product);
+        int freeCount = promotionService.calculateFreeCount(
+                new ItemDto(product.name(), product.quantity() - excludedPromotionItem.quantity()));
+        return freeCount;
+    }
+
     private boolean validateProduct(ItemDto product) {
         return productStockService.isExistProductWithType(product.name(), ProductType.PROMOTION)
                && productStockService.getProduct(product.name(), ProductType.PROMOTION).getType()
                   != ProductType.PROMOTION;
     }
-
-    public int calculateItemsTotalPrice(List<ItemDto> items) {
-        int totalPrice = 0;
-        for (ItemDto item : items) {
-            totalPrice += priceCalculator.calculateItemPrice(item);
-        }
-        return totalPrice;
-    }
-
 
     private PurchaseResultDto createPurchaseResultDto(List<PurchaseResultItemDto> purchaseItems,
                                                       List<ItemDto> freeItems, int promotionDiscountAmount,
