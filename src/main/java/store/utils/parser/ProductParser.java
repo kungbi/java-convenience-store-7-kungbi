@@ -13,25 +13,26 @@ public class ProductParser {
 
     public ProductFieldsDto nextProduct() throws IOException {
         List<String> fields = reader.readLine();
-
         if (fields == null || fields.isEmpty()) {
             return null;
         }
+        validate(fields);
+        return new ProductFieldsDto(
+                fields.get(0),
+                InputParser.parseInteger(fields.get(1)), InputParser.parseInteger(fields.get(2)),
+                parsePromotionName(fields.get(3)));
+    }
 
+    private String parsePromotionName(String promotionName) {
+        if (promotionName.equals("null")) {
+            return null;
+        }
+        return promotionName;
+    }
+
+    private static void validate(List<String> fields) {
         if (fields.size() != 4) {
             throw new IllegalArgumentException("Invalid product data");
         }
-
-        String name = fields.get(0);
-        int price = InputParser.parseInteger(fields.get(1));
-        int stock = InputParser.parseInteger(fields.get(2));
-        String promotionName = fields.get(3);
-
-        if (promotionName.equals("null")) {
-            return new ProductFieldsDto(name, price, stock, null);
-        }
-
-        return new ProductFieldsDto(name, price, stock, promotionName);
     }
-
 }

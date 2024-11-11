@@ -14,13 +14,19 @@ public class PromotionParser {
 
     public PromotionFieldsDto nextPromotion() throws IOException {
         List<String> fields = reader.readLine();
-
         if (fields == null || fields.isEmpty()) {
             return null;
         }
-
-        return new PromotionFieldsDto(fields.get(0), InputParser.parseInteger(fields.get(1)),
-                InputParser.parseInteger(fields.get(2)),
+        validate(fields);
+        return new PromotionFieldsDto(
+                fields.get(0),
+                InputParser.parseInteger(fields.get(1)), InputParser.parseInteger(fields.get(2)),
                 LocalDateTimes.of(fields.get(3)), LocalDateTimes.of(fields.get(4)));
+    }
+
+    private static void validate(List<String> fields) {
+        if (fields.size() != 5) {
+            throw new IllegalArgumentException("Invalid promotion data");
+        }
     }
 }
