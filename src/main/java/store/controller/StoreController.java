@@ -55,10 +55,15 @@ public class StoreController {
 
         List<ItemDto> purchaseItems = inputRetryUtil.getPurchaseItems();
         purchaseItems = applyAdditionalPromotions(purchaseItems);
-        applyExcludedPromotions(purchaseItems);
+        for (ItemDto item : promotionService.findExcludedPromotionItems(new PurchaseItemsDto(purchaseItems)).items()) {
+            boolean answer = inputRetryUtil.askForFullPricePurchase(item.name(), item.quantity());
+            if (!answer) {
+                return;
+            }
+        }
         boolean membership = inputRetryUtil.askForMembershipDiscount();
 
-        PurchaseResultDto purchaseResult = purchaseService.purchase(new PurchaseRequestDto(purchaseItems, false));
+        PurchaseResultDto purchaseResult = purchaseService.purchase(new PurchaseRequestDto(purchaseItems, membership));
         consoleOutput.printPurchaseSummary(purchaseResult);
     }
 
@@ -72,12 +77,6 @@ public class StoreController {
             }
         }
         return updatedItems;
-    }
-
-    private void applyExcludedPromotions(List<ItemDto> purchaseItems) {
-        for (ItemDto item : promotionService.findExcludedPromotionItems(new PurchaseItemsDto(purchaseItems)).items()) {
-            boolean answer = inputRetryUtil.askForFullPricePurchase(item.name(), item.quantity());
-        }
     }
 
     private List<ItemDto> updateItemQuantity(List<ItemDto> itemDtos, String name, int additionalQuantity) {
