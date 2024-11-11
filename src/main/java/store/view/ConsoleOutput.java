@@ -26,11 +26,11 @@ public class ConsoleOutput {
     }
 
     public void printPurchaseSummary(PurchaseResultDto purchaseResult) {
-        System.out.println("==============W 편의점================");
-        System.out.printf("%-10s %10s %10s\n", "상품명", "수량", "금액");
+        System.out.println("===============W 편의점=================");
+        System.out.printf("%-10s %10s %12s\n", "상품명", "수량", "금액");
         printPurchaseItems(purchaseResult.purchaseItems());
         printFreeItems(purchaseResult.freeItems());
-        System.out.println("====================================");
+        System.out.println("======================================");
         printSummary(purchaseResult);
     }
 
@@ -76,7 +76,7 @@ public class ConsoleOutput {
         if (freeItems.isEmpty()) {
             return;
         }
-        System.out.println("===============증 정=================");
+        System.out.println("================증 정==================");
         for (ItemDto item : freeItems) {
             System.out.printf("%-10s %10d\n", item.name(), item.quantity());
         }
@@ -87,6 +87,7 @@ public class ConsoleOutput {
         printSummaryLine("행사할인", -result.promotionDiscountAmount());
         printSummaryLine("멤버십할인", -result.membershipDiscountAmount());
         printSummaryLine("내실돈", result.paymentAmount());
+
     }
 
     private void printSummaryLine(String label, int amount) {
