@@ -9,10 +9,24 @@ import store.exception.InputParserException;
 import store.exception.message.InputParserExceptionMessage;
 
 public class InputParser {
+    public static final String PRODUCT_QUANTITY_REGEX = "\\[(.+)-(.+)\\]"; // e.g. [사이다-3]
+    static Pattern pattern;
+
     public static List<ItemDto> parseItems(String input) {
         validate(input);
+        compilePattern();
+        return parseToItems(input);
+    }
+
+    public static int parseInteger(String input) {
+        validate(input);
+        return parseSingleInteger(input);
+    }
+
+    // private methods
+
+    private static List<ItemDto> parseToItems(String input) {
         List<ItemDto> purchaseItems = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\\[(.+)-(.+)\\]");
         for (String token : input.split(",")) {
             Matcher matcher = pattern.matcher(token);
             while (matcher.find()) {
@@ -24,12 +38,11 @@ public class InputParser {
         return purchaseItems;
     }
 
-    public static int parseInteger(String input) {
-        validate(input);
-        return parseSingleInteger(input);
+    private static void compilePattern() {
+        if (pattern == null) {
+            pattern = Pattern.compile(PRODUCT_QUANTITY_REGEX);
+        }
     }
-
-    // private methods
 
     private static void validate(String input) {
         if (input == null || input.isBlank()) {
