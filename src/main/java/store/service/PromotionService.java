@@ -21,7 +21,7 @@ public class PromotionService {
     public AdditionalFreeItemsDto findAdditionalFreeItems(PurchaseItemsDto purchaseItemsDto) {
         List<ItemDto> freePromotionItems = new ArrayList<>();
         for (ItemDto product : purchaseItemsDto.products()) {
-            findAdditionalFreeItems(product, freePromotionItems);
+            addAdditionalFreeItems(product, freePromotionItems);
         }
         return new AdditionalFreeItemsDto(freePromotionItems);
     }
@@ -29,78 +29,59 @@ public class PromotionService {
     public ExcludedPromotionItemsDto findExcludedPromotionItems(PurchaseItemsDto purchaseItemsDto) {
         List<ItemDto> excludedPromotionItems = new ArrayList<>();
         for (ItemDto product : purchaseItemsDto.products()) {
-            ItemDto excludedPromotionItem = findExcludedPromotionItem(product);
-            if (excludedPromotionItem.quantity() > 0) {
-                excludedPromotionItems.add(excludedPromotionItem);
+            ItemDto excludedItem = findExcludedPromotionItem(product);
+            if (excludedItem.quantity() > 0) {
+                excludedPromotionItems.add(excludedItem);
             }
         }
         return new ExcludedPromotionItemsDto(excludedPromotionItems);
     }
 
-    public ItemDto findExcludedPromotionItem(ItemDto product) {
-        // 프로모션 상품이 존재하지 않거나, 프로모션이 적용 불가능한 경우 0을 반환
-        if (!productStock.isExistProductWithType(product.name(), ProductType.PROMOTION)) {
-            return new ItemDto(product.name(), 0);
-        }
-
-        PromotionProduct promotionProduct = (PromotionProduct) productStock.getProduct(product.name(),
-                ProductType.PROMOTION);
-        Promotion promotion = promotionProduct.getPromotion();
-
-        // 프로모션이 적용 불가능한 경우 0을 반환
-        if (!promotion.isAvailable()) {
-            return new ItemDto(product.name(), 0);
-        }
-
-        // 프로모션 제외 수량 계산
-        int excludedPromotionCount = promotion.calculateExcludedPromotionCount(
-                product.quantity(),
-                productStock.getProductQuantity(product.name(), ProductType.PROMOTION)
-        );
-
-        // 항상 ItemDto 반환, 제외 수량이 없으면 0을 설정
-        return new ItemDto(product.name(), excludedPromotionCount);
-    }
-
-
     public int calculateFreeCount(ItemDto purchaseItemDto) {
-        if (!productStock.isExistProductWithType(purchaseItemDto.name(), ProductType.PROMOTION)) {
+        Promotion promotion = getValidPromotion(purchaseItemDto.name());
+        if (promotion == null) {
             return 0;
         }
-        PromotionProduct promotionProduct = (PromotionProduct) productStock.getProduct(purchaseItemDto.name(),
-                ProductType.PROMOTION);
-
-        if (!promotionProduct.isAvailable()) {
-            return 0;
-        }
-
-        int freeCount = promotionProduct.getPromotion().calculateFreeCount(purchaseItemDto.quantity());
-        if (freeCount > productStock.getProductQuantityByUuid(promotionProduct.getUuid())) {
-            return 0;
-        }
-        return freeCount;
+        int freeCount = promotion.calculateFreeCount(purchaseItemDto.quantity());
+        int promotionStock = productStock.getProductQuantityByUuid(
+                ((PromotionProduct) productStock.getProduct(purchaseItemDto.name(), ProductType.PROMOTION)).getUuid());
+        return Math.min(freeCount, promotionStock);
     }
 
-    private void findAdditionalFreeItems(ItemDto product, List<ItemDto> freePromotionItems) {
-        if (!productStock.isExistProductWithType(product.name(), ProductType.PROMOTION)) {
+    public ItemDto findExcludedPromotionItem(ItemDto product) {
+        Promotion promotion = getValidPromotion(product.name());
+        if (promotion == null) {
+            return new ItemDto(product.name(), 0);
+        }
+
+        int excludedCount = promotion.calculateExcludedPromotionCount(
+                product.quantity(), productStock.getProductQuantity(product.name(), ProductType.PROMOTION)
+        );
+        return new ItemDto(product.name(), excludedCount);
+    }
+
+    private void addAdditionalFreeItems(ItemDto product, List<ItemDto> freeItems) {
+        Promotion promotion = getValidPromotion(product.name());
+        if (promotion == null) {
             return;
         }
 
-        Promotion promotion = ((PromotionProduct) productStock.getProduct(product.name(),
-                ProductType.PROMOTION)).getPromotion();
+        int additionalFreeCount = promotion.getAdditionalFreeItemCount(product.quantity());
+        int promotionStock = productStock.getProductQuantity(product.name(), ProductType.PROMOTION);
+        if (additionalFreeCount > 0 && promotionStock >= product.quantity() + additionalFreeCount) {
+            freeItems.add(new ItemDto(product.name(), additionalFreeCount));
+        }
+    }
 
-        if (!promotion.isAvailable()) {
-            return;
+    private Promotion getValidPromotion(String productName) {
+        if (!productStock.isExistProductWithType(productName, ProductType.PROMOTION)) {
+            return null;
         }
 
-        int additionalFreeItemCount = promotion.getAdditionalFreeItemCount(product.quantity());
-        if (additionalFreeItemCount == 0) {
-            return;
+        PromotionProduct promoProduct = (PromotionProduct) productStock.getProduct(productName, ProductType.PROMOTION);
+        if (!promoProduct.getPromotion().isAvailable()) {
+            return null;
         }
-
-        int productQuantity = productStock.getProductQuantity(product.name(), ProductType.PROMOTION);
-        if (product.quantity() + additionalFreeItemCount <= productQuantity) {
-            freePromotionItems.add(new ItemDto(product.name(), additionalFreeItemCount));
-        }
+        return promoProduct.getPromotion();
     }
 }
