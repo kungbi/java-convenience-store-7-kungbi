@@ -89,9 +89,9 @@ public class PromotionService {
             return;
         }
 
-        int additionalFreeItemCount = promotion.getAdditionalFreeItemCount(product.quantity()); // 7 -> 2
-        int productQuantity = productStock.getProductQuantity(product.name(), ProductType.PROMOTION); // 8
-        if (product.quantity() + additionalFreeItemCount <= productQuantity) { // 7 + 2 <= 8
+        int additionalFreeItemCount = promotion.getAdditionalFreeItemCount(product.quantity());
+        int productQuantity = productStock.getProductQuantity(product.name(), ProductType.PROMOTION);
+        if (product.quantity() + additionalFreeItemCount <= productQuantity) {
             freePromotionItems.add(new ItemDto(product.name(), additionalFreeItemCount));
         }
     }

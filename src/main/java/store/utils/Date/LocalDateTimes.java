@@ -1,13 +1,14 @@
 package store.utils.Date;
 
 import camp.nextstep.edu.missionutils.DateTimes;
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
+import store.exception.LocalDateTimesException;
+import store.exception.message.LocalDatesTimeExceptionMessage;
 
 public class LocalDateTimes {
     public static LocalDateTime of(String stringDate) {
         if (stringDate == null) {
-            throw new DateTimeException("NULL 입력이 있습니다.");
+            throw new LocalDateTimesException(LocalDatesTimeExceptionMessage.DATE_NULL);
         }
 
         if (stringDate.contains("T")) {
@@ -16,7 +17,7 @@ public class LocalDateTimes {
 
         String[] tokens = stringDate.split("-");
         if (tokens.length != 3) {
-            throw new DateTimeException("날짜 형식이 잘못되었습니다.");
+            throw new LocalDateTimesException(LocalDatesTimeExceptionMessage.DATE_FORMAT_ERROR);
         }
 
         try {
@@ -25,7 +26,7 @@ public class LocalDateTimes {
             int day = Integer.parseInt(tokens[2]);
             return DateTimes.now().withYear(year).withMonth(month).withDayOfMonth(day);
         } catch (NumberFormatException error) {
-            throw new DateTimeException("날짜 형식이 잘못되었습니다.", error);
+            throw new LocalDateTimesException(LocalDatesTimeExceptionMessage.DATE_FORMAT_ERROR, error);
         }
 
     }
