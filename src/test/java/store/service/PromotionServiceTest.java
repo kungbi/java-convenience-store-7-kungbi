@@ -16,6 +16,7 @@ import store.entity.ProductStock;
 import store.entity.Promotion;
 import store.entity.product.CommonProduct;
 import store.entity.product.PromotionProduct;
+import store.service.PromotionService.PromotionService;
 import store.utils.Date.LocalDateTimes;
 
 class PromotionServiceTest {

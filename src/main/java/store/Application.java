@@ -7,7 +7,7 @@ import store.entity.PromotionManagement;
 import store.entity.membership.BasicMembership;
 import store.service.InitialDataService;
 import store.service.ProductStockService;
-import store.service.PromotionService;
+import store.service.PromotionService.PromotionService;
 import store.service.PurchaseService.PurchaseService;
 import store.view.ConsoleInput;
 import store.view.ConsoleOutput;
