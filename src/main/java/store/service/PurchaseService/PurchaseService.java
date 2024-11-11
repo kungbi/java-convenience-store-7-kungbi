@@ -17,6 +17,7 @@ public class PurchaseService {
     private final PromotionService promotionService;
     private final Membership membership;
     private final PriceCalculator priceCalculator;
+    private final DiscountCalculator discountCalculator;
 
     public PurchaseService(ProductStockService productStockService, PromotionService promotionService,
                            Membership membership) {
@@ -24,6 +25,7 @@ public class PurchaseService {
         this.promotionService = promotionService;
         this.membership = membership;
         this.priceCalculator = new PriceCalculator(productStockService);
+        this.discountCalculator = new DiscountCalculator(membership, productStockService);
     }
 
     public PurchaseResultDto purchase(PurchaseRequestDto purchaseInputDto) {
@@ -32,25 +34,13 @@ public class PurchaseService {
         List<PurchaseResultItemDto> purchaseItems = calculatePurchaseItems(purchaseInputDto, freeItems);
 
         int totalAmount = calculateItemsTotalPrice(purchaseInputDto.products());
-        int promotionDiscountAmount = calculatePromotionDiscountAmount(freeItems);
-        int membershipDiscountAmount = calculateMembershipDiscountAmount(purchaseInputDto, totalAmount);
+        int promotionDiscountAmount = discountCalculator.calculatePromotionDiscountAmount(freeItems);
+        int membershipDiscountAmount = discountCalculator.calculateMembershipDiscountAmount(purchaseInputDto, totalAmount);
         this.productStockService.reduceStocks(new PurchaseItemsDto(purchaseInputDto.products()));
         return createPurchaseResultDto(purchaseItems, freeItems, promotionDiscountAmount, membershipDiscountAmount,
                 totalAmount);
     }
 
-    private int calculateMembershipDiscountAmount(PurchaseRequestDto purchaseInputDto, int totalAmount) {
-        int membershipDiscountAmount = 0;
-        if (purchaseInputDto.isMembership()) {
-            membershipDiscountAmount = membership.applyDiscount(totalAmount);
-        }
-        return membershipDiscountAmount;
-    }
-
-    private Integer calculatePromotionDiscountAmount(List<ItemDto> freeItems) {
-        return freeItems.stream().reduce(0, (sum, item) -> sum + productStockService.getProduct(item.name(),
-                ProductType.PROMOTION).getPrice() * item.quantity(), Integer::sum);
-    }
 
     private List<PurchaseResultItemDto> calculatePurchaseItems(PurchaseRequestDto purchaseInputDto,
                                                                List<ItemDto> freeItems) {
@@ -72,7 +62,8 @@ public class PurchaseService {
         if (freeCount > 0) {
             freeItems.add(new ItemDto(product.name(), freeCount));
         }
-        purchaseItems.add(new PurchaseResultItemDto(product.name(), product.quantity(), priceCalculator.calculateItemPrice(product)));
+        purchaseItems.add(new PurchaseResultItemDto(product.name(), product.quantity(),
+                priceCalculator.calculateItemPrice(product)));
     }
 
     private boolean validateProduct(ItemDto product) {
@@ -90,9 +81,9 @@ public class PurchaseService {
     }
 
 
-    private static PurchaseResultDto createPurchaseResultDto(List<PurchaseResultItemDto> purchaseItems,
-                                                             List<ItemDto> freeItems, int promotionDiscountAmount,
-                                                             int membershipDiscountAmount, int totalAmount) {
+    private PurchaseResultDto createPurchaseResultDto(List<PurchaseResultItemDto> purchaseItems,
+                                                      List<ItemDto> freeItems, int promotionDiscountAmount,
+                                                      int membershipDiscountAmount, int totalAmount) {
         return new PurchaseResultDto.Builder().purchaseItems(purchaseItems).freeItems(freeItems)
                 .promotionDiscountAmount(promotionDiscountAmount).membershipDiscountAmount(membershipDiscountAmount)
                 .totalAmount(totalAmount)
