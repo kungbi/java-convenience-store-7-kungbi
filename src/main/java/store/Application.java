@@ -8,7 +8,7 @@ import store.entity.membership.BasicMembership;
 import store.service.InitialDataService;
 import store.service.ProductStockService;
 import store.service.PromotionService;
-import store.service.PurchaseService;
+import store.service.PurchaseService.PurchaseService;
 import store.view.ConsoleInput;
 import store.view.ConsoleOutput;
 
