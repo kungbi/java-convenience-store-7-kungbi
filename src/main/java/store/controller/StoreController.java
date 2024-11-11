@@ -85,7 +85,7 @@ public class StoreController {
         List<ItemDto> updatedItems = new ArrayList<>(purchaseItems);
 
         for (ItemDto item : promotionService.findAdditionalFreeItems(new PurchaseItemsDto(purchaseItems)).products()) {
-            boolean answer = inputRetryUtil.askForAdditionalPromotion(item.name());
+            boolean answer = inputRetryUtil.askForAdditionalPromotion(item.name(), item.quantity());
             if (answer) {
                 updatedItems = updateItemQuantity(updatedItems, item.name(), item.quantity());
             }

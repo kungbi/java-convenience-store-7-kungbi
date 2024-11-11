@@ -37,8 +37,8 @@ public class InputRetryUtil {
                 });
     }
 
-    public boolean askForAdditionalPromotion(String productName) {
-        return readValidatedInput(() -> consoleInput.askForAdditionalPromotion(productName), InputParser::parseYesOrNo,
+    public boolean askForAdditionalPromotion(String productName, int quantity) {
+        return readValidatedInput(() -> consoleInput.askForAdditionalPromotion(productName, quantity), InputParser::parseYesOrNo,
                 input -> {});
     }
 

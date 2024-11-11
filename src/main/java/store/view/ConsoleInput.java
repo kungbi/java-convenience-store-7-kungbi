@@ -9,9 +9,9 @@ public class ConsoleInput {
         return readUserInput("구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])");
     }
 
-    public String askForAdditionalPromotion(String productName) {
+    public String askForAdditionalPromotion(String productName, int quantity) {
         newLine();
-        return readUserInput("현재 " + productName + "은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)");
+        return readUserInput("현재 " + productName + "은(는) " + quantity + "개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)");
     }
 
     public String askForFullPricePurchase(String productName, int quantity) {
