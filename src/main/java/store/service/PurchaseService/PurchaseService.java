@@ -32,7 +32,6 @@ public class PurchaseService {
         productStockService.validateStocks(new PurchaseItemsDto(purchaseInputDto.products()));
         List<ItemDto> freeItems = new ArrayList<>();
         List<PurchaseResultItemDto> purchaseItems = calculatePurchaseItems(purchaseInputDto, freeItems);
-
         int totalAmount = priceCalculator.calculateItemsTotalPrice(purchaseInputDto.products());
         int promotionDiscountAmount = discountCalculator.calculatePromotionDiscountAmount(freeItems);
         int membershipDiscountAmount = discountCalculator.calculateMembershipDiscountAmount(purchaseInputDto,

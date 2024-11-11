@@ -40,7 +40,9 @@ public class PromotionService {
         if (promotion == null) {
             return 0;
         }
-        int freeCount = promotion.calculateFreeCount(purchaseItemDto.quantity());
+
+        int promotionProductQuantity = productStock.getProductQuantity(purchaseItemDto.name(), ProductType.PROMOTION);
+        int freeCount = promotion.calculateFreeCount(Math.min(purchaseItemDto.quantity(), promotionProductQuantity));
         int promotionStock = productStock.getProductQuantityByUuid(
                 ((PromotionProduct) productStock.getProduct(purchaseItemDto.name(), ProductType.PROMOTION)).getUuid());
         return Math.min(freeCount, promotionStock);

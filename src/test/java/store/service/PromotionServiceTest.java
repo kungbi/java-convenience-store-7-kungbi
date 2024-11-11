@@ -126,6 +126,7 @@ class PromotionServiceTest {
 
         static Stream<Arguments> 정상__증정상품_수량_계산하기() {
             return Stream.of(
+                    Arguments.of(new ItemDto("사과", 20), 5),
                     Arguments.of(new ItemDto("콜라", 1), 0),
                     Arguments.of(new ItemDto("사이다", 2), 1),
                     Arguments.of(new ItemDto("펩시", 1), 0),
@@ -161,6 +162,10 @@ class PromotionServiceTest {
             productStock.addProduct(new PromotionProduct("바나나", 1000,
                     new Promotion("프로모션", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 0);
+            productStock.addProduct(new CommonProduct("사과", 1000), 10);
+            productStock.addProduct(new PromotionProduct("사과", 1000,
+                    new Promotion("프로모션", 1, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
+                    )), 10);
         }
 
         @ParameterizedTest
@@ -181,7 +186,7 @@ class PromotionServiceTest {
     class 기능_findExcludedPromotionItems_테스트 {
         ProductStock productStock;
 
-        static Stream<Arguments> 정상__증정상품_수량_계산하기() {
+        static Stream<Arguments> 정상__프로모션_제외_상품_구하기_테스트_케이스() {
             return Stream.of(
                     Arguments.of(
                             new PurchaseItemsDto(List.of(new ItemDto("사이다", 3))),
@@ -218,7 +223,7 @@ class PromotionServiceTest {
         }
 
         @ParameterizedTest
-        @MethodSource("정상__증정상품_수량_계산하기")
+        @MethodSource("정상__프로모션_제외_상품_구하기_테스트_케이스")
         void 정상__프로모션_제외_상품_구하기(PurchaseItemsDto purchaseItemsDto, ExcludedPromotionItemsDto expected) {
             // given
             PromotionService promotionService = new PromotionService(productStock);
