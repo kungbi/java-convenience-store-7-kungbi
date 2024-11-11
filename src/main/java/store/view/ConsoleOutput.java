@@ -10,63 +10,90 @@ import store.dto.PurchaseResultItemDto;
 
 public class ConsoleOutput {
 
-    // 인사말 출력
+    private final NumberFormat currencyFormat = NumberFormat.getInstance(Locale.KOREA);
+
+    // public methods
+
     public void printWelcomeMessage() {
-        System.out.println("안녕하세요. w편의점입니다.");
+        System.out.println("안녕하세요. W편의점입니다.");
     }
 
-    // 상품 목록을 지정된 형식으로 출력하는 메서드
     public void printProductList(List<ProductInfoDto> products) {
         System.out.println("현재 보유하고 있는 상품입니다.\n");
         for (ProductInfoDto product : products) {
-            StringBuilder output = new StringBuilder();
-            output.append("- ").append(product.name()).append(" ").append(String.format("%,d", product.price()))
-                    .append("원 ");
-
-            if (product.quantity() > 0) {
-                output.append(product.quantity()).append("개");
-            } else {
-                output.append("재고 없음");
-            }
-
-            if (product.promotion() != null && !product.promotion().isEmpty()) {
-                output.append(" ").append(product.promotion());
-            }
-
-            System.out.println(output.toString());
+            printProductInfo(product);
         }
     }
 
-    // 구매 요약 출력
     public void printPurchaseSummary(PurchaseResultDto purchaseResult) {
-        NumberFormat currencyFormat = NumberFormat.getInstance(Locale.KOREA);
-
         System.out.println("==============W 편의점================");
         System.out.printf("%-10s %10s %10s\n", "상품명", "수량", "금액");
-
-        for (PurchaseResultItemDto item : purchaseResult.purchaseItems()) {
-            String itemName = item.name();
-            int quantity = item.quantity();
-            int itemPrice = item.price();
-            System.out.printf("%-10s %10d %15s\n", itemName, quantity, currencyFormat.format(itemPrice));
-        }
-
-        System.out.println("===============증 정=================");
-        for (ItemDto item : purchaseResult.freeItems()) {
-            System.out.printf("%-10s %10d\n", item.name(), item.quantity());
-        }
-
+        printPurchaseItems(purchaseResult.purchaseItems());
+        printFreeItems(purchaseResult.freeItems());
         System.out.println("====================================");
-        System.out.printf("%-10s %25s\n", "총구매액", currencyFormat.format(purchaseResult.totalAmount()));
-        System.out.printf("%-10s %25s\n", "행사할인",
-                currencyFormat.format(purchaseResult.promotionDiscountAmount() * -1));
-        System.out.printf("%-10s %25s\n", "멤버십할인",
-                currencyFormat.format(purchaseResult.membershipDiscountAmount() * -1));
-        System.out.printf("%-10s %25s\n", "내실돈", currencyFormat.format(purchaseResult.paymentAmount()));
+        printSummary(purchaseResult);
     }
 
     public void printException(Exception e) {
         System.out.println("[ERROR] " + e.getMessage());
     }
 
+    // private methods
+
+    private void printProductInfo(ProductInfoDto product) {
+        String name = product.name();
+        int price = product.price();
+        String quantity = getQuantityString(product.quantity());
+        String promotion = getPromotionString(product.promotion());
+
+        System.out.printf("- %s %,d원 %s %s\n", name, price, quantity, promotion);
+    }
+
+    private String getQuantityString(int quantity) {
+        if (quantity > 0) {
+            return quantity + "개";
+        }
+        return "재고 없음";
+    }
+
+    private String getPromotionString(String promotion) {
+        if (promotion != null && !promotion.isEmpty()) {
+            return promotion;
+        }
+        return "";
+    }
+
+    private void printPurchaseItems(List<PurchaseResultItemDto> items) {
+        for (PurchaseResultItemDto item : items) {
+            String name = item.name();
+            int quantity = item.quantity();
+            String price = formatCurrency(item.price());
+            System.out.printf("%-10s %10d %15s\n", name, quantity, price);
+        }
+    }
+
+    private void printFreeItems(List<ItemDto> freeItems) {
+        if (freeItems.isEmpty()) {
+            return;
+        }
+        System.out.println("===============증 정=================");
+        for (ItemDto item : freeItems) {
+            System.out.printf("%-10s %10d\n", item.name(), item.quantity());
+        }
+    }
+
+    private void printSummary(PurchaseResultDto result) {
+        printSummaryLine("총구매액", result.totalAmount());
+        printSummaryLine("행사할인", -result.promotionDiscountAmount());
+        printSummaryLine("멤버십할인", -result.membershipDiscountAmount());
+        printSummaryLine("내실돈", result.paymentAmount());
+    }
+
+    private void printSummaryLine(String label, int amount) {
+        System.out.printf("%-10s %25s\n", label, formatCurrency(amount));
+    }
+
+    private String formatCurrency(int amount) {
+        return currencyFormat.format(amount);
+    }
 }
