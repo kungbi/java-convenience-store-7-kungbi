@@ -5,21 +5,30 @@ import store.exception.DtoException;
 import store.exception.message.DtoExceptionMessage;
 
 public record PromotionFieldsDto(String name, int buy, int get, LocalDateTime startDate, LocalDateTime endDate) {
+
     public PromotionFieldsDto {
+        validateName(name);
+        validateQuantity(buy, DtoExceptionMessage.ITEM_QUANTITY_LESS_THAN_ZERO);
+        validateQuantity(get, DtoExceptionMessage.ITEM_QUANTITY_LESS_THAN_ZERO);
+        validateDate(startDate, DtoExceptionMessage.START_DATE_NULL);
+        validateDate(endDate, DtoExceptionMessage.END_DATE_NULL);
+    }
+
+    private void validateName(String name) {
         if (name == null || name.isBlank()) {
             throw new DtoException(DtoExceptionMessage.ITEM_NAME_NULL_OR_BLANK);
         }
-        if (buy <= 0) {
-            throw new DtoException(DtoExceptionMessage.ITEM_QUANTITY_LESS_THAN_ZERO);
+    }
+
+    private void validateQuantity(int quantity, DtoExceptionMessage message) {
+        if (quantity <= 0) {
+            throw new DtoException(message);
         }
-        if (get <= 0) {
-            throw new DtoException(DtoExceptionMessage.ITEM_QUANTITY_LESS_THAN_ZERO);
-        }
-        if (startDate == null) {
-            throw new DtoException(DtoExceptionMessage.START_DATE_NULL);
-        }
-        if (endDate == null) {
-            throw new DtoException(DtoExceptionMessage.END_DATE_NULL);
+    }
+
+    private void validateDate(LocalDateTime date, DtoExceptionMessage message) {
+        if (date == null) {
+            throw new DtoException(message);
         }
     }
 }
