@@ -104,7 +104,8 @@ class ApplicationTest extends NsTest {
     @Test
     void 정상__멤버십_할인() {
         assertSimpleTest(() -> {
-            run("[사이다-3]", "Y", "Y");
+            run("[사이다-3]", "Y", "N");
+            assertThat(output().replaceAll("\\s", "")).contains("내실돈1,100");
         });
     }
 
