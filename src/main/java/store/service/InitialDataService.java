@@ -18,53 +18,67 @@ import store.utils.parser.PromotionParser;
 
 public class InitialDataService {
 
-    public static void init(ProductStock productStock, PromotionManagement promotionManagement)
+    public static void init(ProductStock productStock, PromotionManagement promotionManagement) throws IOException {
+        loadPromotions(promotionManagement);
+        loadProducts(productStock, promotionManagement);
+        addMissingCommonProducts(productStock);
+    }
+
+    private static void loadPromotions(PromotionManagement promotionManagement) throws IOException {
+        BufferedReader reader = createBufferedReader("promotions.md");
+        PromotionParser parser = new PromotionParser(new CsvReader(reader, true));
+
+        PromotionFieldsDto fields;
+        while ((fields = parser.nextPromotion()) != null) {
+            promotionManagement.addPromotion(createPromotion(fields));
+        }
+    }
+
+    private static void loadProducts(ProductStock productStock, PromotionManagement promotionManagement)
             throws IOException {
-        BufferedReader promotionBufferedReader = new BufferedReader(
-                new InputStreamReader(InitialDataService.class.getClassLoader().getResourceAsStream("promotions.md"))
-        );
-        PromotionParser promotionParser = new PromotionParser(new CsvReader(promotionBufferedReader, true));
+        BufferedReader reader = createBufferedReader("products.md");
+        ProductParser parser = new ProductParser(new CsvReader(reader, true));
 
-        PromotionFieldsDto promotionFieldsDto;
-        while ((promotionFieldsDto = promotionParser.nextPromotion()) != null) {
-            promotionManagement.addPromotion(new Promotion(
-                    promotionFieldsDto.name(),
-                    promotionFieldsDto.buy(),
-                    promotionFieldsDto.get(),
-                    promotionFieldsDto.startDate(),
-                    promotionFieldsDto.endDate()
-            ));
+        ProductFieldsDto fields;
+        while ((fields = parser.nextProduct()) != null) {
+            addProductBasedOnType(productStock, promotionManagement, fields);
         }
+    }
 
-        BufferedReader productBufferReader = new BufferedReader(
-                new InputStreamReader(InitialDataService.class.getClassLoader().getResourceAsStream("products.md"))
-        );
-        ProductParser productParser = new ProductParser(new CsvReader(productBufferReader, true));
+    private static BufferedReader createBufferedReader(String fileName) {
+        return new BufferedReader(new InputStreamReader(
+                InitialDataService.class.getClassLoader().getResourceAsStream(fileName)
+        ));
+    }
 
-        ProductFieldsDto productFieldsDto;
-        while ((productFieldsDto = productParser.nextProduct()) != null) {
-            if (productFieldsDto.promotionName() == null) {
-                productStock.addProduct(new CommonProduct(
-                        productFieldsDto.name(),
-                        productFieldsDto.price()
-                ), productFieldsDto.quantity());
-            }
-            if (productFieldsDto.promotionName() != null) {
-                productStock.addProduct(new PromotionProduct(
-                        productFieldsDto.name(),
-                        productFieldsDto.price(),
-                        promotionManagement.getPromotion(productFieldsDto.promotionName())
-                ), productFieldsDto.quantity(
-                ));
-            }
+    private static Promotion createPromotion(PromotionFieldsDto fields) {
+        return new Promotion(fields.name(), fields.buy(), fields.get(), fields.startDate(), fields.endDate());
+    }
+
+    private static void addProductBasedOnType(ProductStock productStock, PromotionManagement promotionManagement,
+                                              ProductFieldsDto fields) {
+        if (fields.promotionName() == null) {
+            addCommonProduct(productStock, fields);
+            return;
         }
+        addPromotionProduct(productStock, promotionManagement, fields);
+    }
 
+    private static void addCommonProduct(ProductStock productStock, ProductFieldsDto fields) {
+        productStock.addProduct(new CommonProduct(fields.name(), fields.price()), fields.quantity());
+    }
+
+    private static void addPromotionProduct(ProductStock productStock, PromotionManagement promotionManagement,
+                                            ProductFieldsDto fields) {
+        Promotion promotion = promotionManagement.getPromotion(fields.promotionName());
+        PromotionProduct product = new PromotionProduct(fields.name(), fields.price(), promotion);
+        productStock.addProduct(product, fields.quantity());
+    }
+
+    private static void addMissingCommonProducts(ProductStock productStock) {
         for (Product product : productStock.getProducts()) {
             if (!productStock.isExistProductWithType(product.getName(), ProductType.COMMON)) {
-                productStock.addProduct(new CommonProduct(
-                        product.getName(),
-                        product.getPrice()
-                ), 0);
+                productStock.addProduct(new CommonProduct(product.getName(), product.getPrice()), 0);
             }
         }
     }
