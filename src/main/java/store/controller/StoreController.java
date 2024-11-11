@@ -99,7 +99,7 @@ public class StoreController {
         for (ItemDto itemDto : itemDtos) {
             if (itemDto.name().equals(name)) {
                 updatedItems.add(new ItemDto(name, itemDto.quantity() + additionalQuantity));
-            } else {
+            } else if (!itemDto.name().equals(name)) {
                 updatedItems.add(itemDto);
             }
         }
