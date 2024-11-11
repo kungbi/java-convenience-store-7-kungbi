@@ -23,8 +23,4 @@ public class PromotionProduct extends Product {
         return ProductType.PROMOTION;
     }
 
-    @Override
-    public Product clone() {
-        return new PromotionProduct(getName(), getPrice(), promotion);
-    }
 }

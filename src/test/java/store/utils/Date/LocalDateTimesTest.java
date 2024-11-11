@@ -39,9 +39,22 @@ class LocalDateTimesTest {
     }
 
     @Test
-    void 예외__날짜를_객체로_변환_날짜가_없는_경우() {
+    void 예외__날짜를_객체로_변환시_날짜의_형식이_잘못된_경우() {
         // given
         String stringDate = "2021-10";
+
+        // when
+        LocalDateTimesException exception = Assertions.assertThrows(LocalDateTimesException.class,
+                () -> LocalDateTimes.of(stringDate));
+
+        // then
+        assertEquals(LocalDateTimesExceptionMessage.DATE_FORMAT_ERROR.getMessage(), exception.getMessage());
+    }
+
+    @Test
+    void 예외__날짜를_객체로_변환시_날짜의_형식이_잘못된_경우_2() {
+        // given
+        String stringDate = "2021-10-1-2";
 
         // when
         LocalDateTimesException exception = Assertions.assertThrows(LocalDateTimesException.class,

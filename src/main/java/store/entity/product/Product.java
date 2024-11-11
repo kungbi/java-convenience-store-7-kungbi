@@ -27,11 +27,6 @@ public abstract class Product {
         return this.price;
     }
 
-    public boolean isSameName(Product product) {
-        return this.name.equalsIgnoreCase(product.getName());
-    }
-
     public abstract ProductType getType();
 
-    public abstract Product clone();
 }

@@ -11,8 +11,4 @@ public class CommonProduct extends Product {
         return ProductType.COMMON;
     }
 
-    @Override
-    public Product clone() {
-        return new CommonProduct(getName(), getPrice());
-    }
 }

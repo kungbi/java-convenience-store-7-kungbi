@@ -27,6 +27,19 @@ public class CommonProductTest {
         }
 
         @Test
+        void 정상__상품_타입_확인() {
+            // given
+            String name = "콜라";
+            int price = 1000;
+
+            // when
+            CommonProduct commonProduct = new CommonProduct(name, price);
+
+            // then
+            assertEquals(ProductType.COMMON, commonProduct.getType());
+        }
+
+        @Test
         void 예외__상품_이름이_null인_경우() {
             // given
             String name = null;
