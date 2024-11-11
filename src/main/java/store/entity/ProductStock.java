@@ -13,23 +13,18 @@ public class ProductStock {
     private final Map<String, Map<ProductType, Product>> products;
     private final Map<String, Integer> stocks;
 
-
     public ProductStock() {
         this.products = new HashMap<>();
         this.stocks = new HashMap<>();
     }
 
-    public void addProduct(Product product, int quantity) {
-        if (product == null) {
-            throw new ProductStockException(ProductStockExceptionMessage.NULL_PRODUCT,
-                    new NullPointerException());
-        }
+    // public methods
 
-        this.products.putIfAbsent(product.getName(), new HashMap<>());
-        if (this.products.get(product.getName()).containsKey(product.getType())) {
-            throw new ProductStockException(ProductStockExceptionMessage.DUPLICATE_PRODUCT);
-        }
-        this.products.get(product.getName()).put(product.getType(), product);
+    public void addProduct(Product product, int quantity) {
+        validateProduct(product);
+        products.putIfAbsent(product.getName(), new HashMap<>());
+        checkDuplicateProduct(product);
+        products.get(product.getName()).put(product.getType(), product);
         stocks.put(product.getUuid(), quantity);
     }
 
@@ -44,113 +39,100 @@ public class ProductStock {
     }
 
     public boolean isExistProductWithType(String name, ProductType type) {
-        return products.get(name).containsKey(type);
+        return products.getOrDefault(name, Map.of()).containsKey(type);
     }
 
     public int getProductQuantityByUuid(String uuid) {
-        return stocks.get(uuid);
+        return stocks.getOrDefault(uuid, 0);
     }
 
     public boolean isSufficientStock(String name, ProductType type, int quantity) {
-        if (name == null) {
-            throw new ProductStockException(ProductStockExceptionMessage.NULL_NAME);
-        }
-        if (type == null) {
-            throw new ProductStockException(ProductStockExceptionMessage.NULL_TYPE);
-        }
-        if (quantity <= 0) {
-            throw new ProductStockException(ProductStockExceptionMessage.INVALID_QUANTITY);
-        }
-
-        Product product = getProduct(name, type);
-        int currentQuantity = stocks.get(product.getUuid());
+        validateNameAndType(name, type);
+        int currentQuantity = getProductQuantity(name, type);
         return currentQuantity >= quantity;
     }
 
-    public Map<ProductType, Product> getProducts(String name) {
-        try {
-            return products.get(name);
-        } catch (NullPointerException | ClassCastException error) {
-            throw new ProductStockException(ProductStockExceptionMessage.NOT_EXIST_PRODUCT, error);
-        }
-    }
-
     public Product getProduct(String name, ProductType type) {
-        if (name == null) {
-            throw new ProductStockException(ProductStockExceptionMessage.NULL_NAME);
-        }
-        if (type == null) {
-            throw new ProductStockException(ProductStockExceptionMessage.NULL_TYPE);
-        }
-        try {
-            return products.get(name).get(type);
-        } catch (NullPointerException error) {
-            throw new ProductStockException(ProductStockExceptionMessage.NOT_EXIST_PRODUCT, error);
-        }
+        validateNameAndType(name, type);
+        return products.getOrDefault(name, Map.of()).get(type);
     }
 
     public int getProductQuantity(String name, ProductType type) {
-        if (name == null) {
-            throw new ProductStockException(ProductStockExceptionMessage.NULL_NAME);
-        }
-        if (type == null) {
-            throw new ProductStockException(ProductStockExceptionMessage.NULL_TYPE);
-        }
-
         Product product = getProduct(name, type);
         try {
             return stocks.get(product.getUuid());
         } catch (NullPointerException error) {
-            throw new ProductStockException(ProductStockExceptionMessage.NOT_EXIST_PRODUCT, error);
+            throw new ProductStockException(ProductStockExceptionMessage.NOT_EXIST_PRODUCT);
         }
     }
 
     public void reduceProductQuantity(String name, int quantity) {
-        if (name == null) {
-            throw new ProductStockException(ProductStockExceptionMessage.NULL_NAME);
-        }
-        if (quantity <= 0) {
-            throw new ProductStockException(ProductStockExceptionMessage.INVALID_QUANTITY);
-        }
+        validateReduceRequest(name, quantity);
+        Map<ProductType, Product> productTypes = products.get(name);
 
-        if (!isExistProduct(name)) {
-            throw new ProductStockException(ProductStockExceptionMessage.NOT_EXIST_PRODUCT);
-        }
+        int remainingQuantity = reducePromotionStock(productTypes, quantity);
+        reduceCommonStock(productTypes, remainingQuantity);
+    }
 
-        Map<ProductType, Product> products = getProducts(name);
+    // Private helper methods
 
-        int remainingQuantity = quantity;
-
-        // 프로모션 상품 재고 차감
-        if (products.containsKey(ProductType.PROMOTION)) {
-            PromotionProduct promotionProduct = (PromotionProduct) products.get(ProductType.PROMOTION);
-            if (promotionProduct.isAvailable()) {
-                int promotionStock = stocks.getOrDefault(promotionProduct.getUuid(), 0);
-                if (promotionStock >= remainingQuantity) {
-                    stocks.put(promotionProduct.getUuid(), promotionStock - remainingQuantity);
-                    return;
-                }
-                stocks.put(promotionProduct.getUuid(), 0);
-                remainingQuantity -= promotionStock;
-            }
-        }
-
-        // 일반 상품 재고 차감
-        if (remainingQuantity > 0 && products.containsKey(ProductType.COMMON)) {
-            Product commonProduct = products.get(ProductType.COMMON);
-            int commonStock = stocks.getOrDefault(commonProduct.getUuid(), 0);
-            if (commonStock >= remainingQuantity) {
-                stocks.put(commonProduct.getUuid(), commonStock - remainingQuantity);
-                return;
-            }
-            throw new ProductStockException(ProductStockExceptionMessage.INSUFFICIENT_STOCK);
-        }
-
-        // 재고 부족 시 예외 발생
-        if (remainingQuantity > 0) {
-            throw new ProductStockException(ProductStockExceptionMessage.INSUFFICIENT_STOCK);
+    private void validateProduct(Product product) {
+        if (product == null) {
+            throw new ProductStockException(ProductStockExceptionMessage.NULL_PRODUCT, new NullPointerException());
         }
     }
 
+    private void checkDuplicateProduct(Product product) {
+        if (products.get(product.getName()).containsKey(product.getType())) {
+            throw new ProductStockException(ProductStockExceptionMessage.DUPLICATE_PRODUCT);
+        }
+    }
 
+    private void validateNameAndType(String name, ProductType type) {
+        if (name == null) {
+            throw new ProductStockException(ProductStockExceptionMessage.NULL_NAME);
+        }
+        if (type == null) {
+            throw new ProductStockException(ProductStockExceptionMessage.NULL_TYPE);
+        }
+    }
+
+    private void validateReduceRequest(String name, int quantity) {
+        if (name == null || quantity <= 0) {
+            throw new ProductStockException(ProductStockExceptionMessage.INVALID_QUANTITY);
+        }
+        if (!isExistProduct(name)) {
+            throw new ProductStockException(ProductStockExceptionMessage.NOT_EXIST_PRODUCT);
+        }
+    }
+
+    private int reducePromotionStock(Map<ProductType, Product> productTypes, int quantity) {
+        if (!productTypes.containsKey(ProductType.PROMOTION)) {
+            return quantity;
+        }
+
+        PromotionProduct promoProduct = (PromotionProduct) productTypes.get(ProductType.PROMOTION);
+        if (!promoProduct.isAvailable()) {
+            return quantity;
+        }
+
+        int promoStock = stocks.getOrDefault(promoProduct.getUuid(), 0);
+        int usedQuantity = Math.min(promoStock, quantity);
+        stocks.put(promoProduct.getUuid(), promoStock - usedQuantity);
+
+        return quantity - usedQuantity;
+    }
+
+    private void reduceCommonStock(Map<ProductType, Product> productTypes, int quantity) {
+        if (quantity == 0 || !productTypes.containsKey(ProductType.COMMON)) {
+            return;
+        }
+
+        Product commonProduct = productTypes.get(ProductType.COMMON);
+        int commonStock = stocks.getOrDefault(commonProduct.getUuid(), 0);
+        if (commonStock < quantity) {
+            throw new ProductStockException(ProductStockExceptionMessage.INSUFFICIENT_STOCK);
+        }
+        stocks.put(commonProduct.getUuid(), commonStock - quantity);
+    }
 }

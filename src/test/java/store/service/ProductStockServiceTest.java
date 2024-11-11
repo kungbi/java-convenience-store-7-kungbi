@@ -1,13 +1,10 @@
 package store.service;
 
-import camp.nextstep.edu.missionutils.DateTimes;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -150,6 +147,24 @@ class ProductStockServiceTest {
     class 상품_재고_수정_기능_테스트 {
         ProductStock productStock;
 
+        static Stream<Arguments> 정상__상품_재고_수정_테스트_케이스() {
+            return Stream.of(
+                    Arguments.of(
+                            new PurchaseItemsDto(
+                                    List.of(
+                                            new ItemDto("콜라", 1),
+                                            new ItemDto("사이다", 1)
+                                    )
+                            ),
+                            List.of(
+                                    new StockExpected("콜라", 9, ProductType.COMMON),
+                                    new StockExpected("사이다", 2, ProductType.PROMOTION),
+                                    new StockExpected("사이다", 10, ProductType.COMMON)
+                            )
+                    )
+            );
+        }
+
         @BeforeEach
         void setUp() {
             productStock = new ProductStock();
@@ -167,22 +182,44 @@ class ProductStockServiceTest {
                     )), 3);
         }
 
-        @Test
-        void 정상__상품_재고_수정() {
+        @ParameterizedTest
+        @MethodSource("정상__상품_재고_수정_테스트_케이스")
+        void 정상__상품_재고_수정(PurchaseItemsDto purchaseItemsDto, List<StockExpected> expected) {
             // given
             ProductStockService productStockService = new ProductStockService(productStock);
 
             // when
-            productStockService.reduceStocks(new PurchaseItemsDto(
-                    List.of(
-                            new ItemDto("콜라", 1),
-                            new ItemDto("사이다", 1)
-                    )
-            ));
+            productStockService.reduceStocks(purchaseItemsDto);
 
             // then
-            Assertions.assertEquals(9, productStock.getProductQuantity("콜라", ProductType.COMMON));
-            Assertions.assertEquals(2, productStock.getProductQuantity("사이다", ProductType.PROMOTION));
+            for (StockExpected stockExpected : expected) {
+                int quantity = productStock.getProductQuantity(stockExpected.name(), stockExpected.type);
+                Assertions.assertEquals(stockExpected.quantity(), quantity);
+            }
+        }
+
+        static class StockExpected {
+            private final String name;
+            private final int quantity;
+            private final ProductType type;
+
+            public StockExpected(String name, int quantity, ProductType type) {
+                this.name = name;
+                this.quantity = quantity;
+                this.type = type;
+            }
+
+            public String name() {
+                return name;
+            }
+
+            public int quantity() {
+                return quantity;
+            }
+
+            public ProductType getType() {
+                return type;
+            }
         }
     }
 }
