@@ -14,23 +14,29 @@ public record PurchaseResultDto(
         int paymentAmount
 ) {
     public PurchaseResultDto {
+        validatePurchaseItems(purchaseItems);
+        validateFreeItems(freeItems);
+        validateAmount(totalAmount, DtoExceptionMessage.TOTAL_PRICE_LESS_THAN_ZERO);
+        validateAmount(promotionDiscountAmount, DtoExceptionMessage.PROMOTION_DISCOUNT_LESS_THAN_ZERO);
+        validateAmount(membershipDiscountAmount, DtoExceptionMessage.MEMBERSHIP_DISCOUNT_LESS_THAN_ZERO);
+        validateAmount(paymentAmount, DtoExceptionMessage.PAYMENT_AMOUNT_LESS_THAN_ZERO);
+    }
+
+    private void validatePurchaseItems(List<PurchaseResultItemDto> purchaseItems) {
         if (purchaseItems == null) {
             throw new DtoException(DtoExceptionMessage.ITEMS_NULL_OR_EMPTY);
         }
+    }
+
+    private void validateFreeItems(List<ItemDto> freeItems) {
         if (freeItems == null) {
             throw new DtoException(DtoExceptionMessage.FREE_ITEMS_NULL);
         }
-        if (totalAmount < 0) {
-            throw new DtoException(DtoExceptionMessage.TOTAL_PRICE_LESS_THAN_ZERO);
-        }
-        if (promotionDiscountAmount < 0) {
-            throw new DtoException(DtoExceptionMessage.PROMOTION_DISCOUNT_LESS_THAN_ZERO);
-        }
-        if (membershipDiscountAmount < 0) {
-            throw new DtoException(DtoExceptionMessage.MEMBERSHIP_DISCOUNT_LESS_THAN_ZERO);
-        }
-        if (paymentAmount < 0) {
-            throw new DtoException(DtoExceptionMessage.PAYMENT_AMOUNT_LESS_THAN_ZERO);
+    }
+
+    private void validateAmount(int amount, DtoExceptionMessage message) {
+        if (amount < 0) {
+            throw new DtoException(message);
         }
     }
 
