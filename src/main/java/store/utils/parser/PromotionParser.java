@@ -26,7 +26,7 @@ public class PromotionParser {
 
     private static void validate(List<String> fields) {
         if (fields.size() != 5) {
-            throw new IllegalArgumentException("Invalid promotion data");
+            throw new IllegalArgumentException(ParserExceptionMessage.INVALID_PROMOTION_DATA.getMessage());
         }
     }
 }

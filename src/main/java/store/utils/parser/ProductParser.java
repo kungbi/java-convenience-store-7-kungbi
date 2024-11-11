@@ -5,6 +5,7 @@ import java.util.List;
 import store.controller.InputParser;
 
 public class ProductParser {
+    public static final String NULL_STRING = "null";
     private final Reader reader;
 
     public ProductParser(Reader reader) {
@@ -24,7 +25,7 @@ public class ProductParser {
     }
 
     private String parsePromotionName(String promotionName) {
-        if (promotionName.equals("null")) {
+        if (promotionName.equals(NULL_STRING)) {
             return null;
         }
         return promotionName;
@@ -32,7 +33,7 @@ public class ProductParser {
 
     private static void validate(List<String> fields) {
         if (fields.size() != 4) {
-            throw new IllegalArgumentException("Invalid product data");
+            throw new IllegalArgumentException(ParserExceptionMessage.INVALID_PROMOTION_DATA.getMessage());
         }
     }
 }
