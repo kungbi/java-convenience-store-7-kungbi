@@ -43,7 +43,10 @@ public class Promotion {
     }
 
     public int getAdditionalFreeItemCount(int purchaseQuantity) {
-        return (purchaseQuantity % (buyQuantity + freeQuantity) == buyQuantity) ? freeQuantity : 0;
+        if ((purchaseQuantity % (buyQuantity + freeQuantity) == buyQuantity)) {
+            return freeQuantity;
+        }
+        return 0;
     }
 
     public boolean isAvailable() {
