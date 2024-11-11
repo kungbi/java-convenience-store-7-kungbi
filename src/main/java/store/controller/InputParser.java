@@ -12,12 +12,12 @@ public class InputParser {
     public static List<ItemDto> parseItems(String input) {
         validate(input);
         List<ItemDto> purchaseItems = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\\[(.+)-(\\d+)\\]");
+        Pattern pattern = Pattern.compile("\\[(.+)-(.+)\\]");
         for (String token : input.split(",")) {
             Matcher matcher = pattern.matcher(token);
             while (matcher.find()) {
-                String name = matcher.group(1);     // 상품명
-                int quantity = parseInteger(matcher.group(2)); // 수량
+                String name = matcher.group(1).strip();     // 상품명
+                int quantity = parseInteger(matcher.group(2).strip()); // 수량
                 purchaseItems.add(new ItemDto(name, quantity));
             }
         }
