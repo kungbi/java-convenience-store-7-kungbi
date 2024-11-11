@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.DateTimeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import store.exception.LocalDateTimesException;
+import store.exception.message.LocalDateTimesExceptionMessage;
 
 class LocalDateTimesTest {
 
@@ -42,11 +44,11 @@ class LocalDateTimesTest {
         String stringDate = "2021-10";
 
         // when
-        DateTimeException exception = Assertions.assertThrows(DateTimeException.class,
+        LocalDateTimesException exception = Assertions.assertThrows(LocalDateTimesException.class,
                 () -> LocalDateTimes.of(stringDate));
 
         // then
-        assertEquals("날짜 형식이 잘못되었습니다.", exception.getMessage());
+        assertEquals(LocalDateTimesExceptionMessage.DATE_FORMAT_ERROR.getMessage(), exception.getMessage());
     }
 
     @Test
@@ -55,11 +57,11 @@ class LocalDateTimesTest {
         String stringDate = null;
 
         // when
-        DateTimeException exception = Assertions.assertThrows(DatesT,
+        LocalDateTimesException exception = Assertions.assertThrows(LocalDateTimesException.class,
                 () -> LocalDateTimes.of(stringDate));
 
         // then
-        assertEquals("NULL 입력이 있습니다.", exception.getMessage());
+        assertEquals(LocalDateTimesExceptionMessage.DATE_NULL.getMessage(), exception.getMessage());
     }
 
 }

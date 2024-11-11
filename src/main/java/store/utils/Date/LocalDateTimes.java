@@ -3,12 +3,12 @@ package store.utils.Date;
 import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDateTime;
 import store.exception.LocalDateTimesException;
-import store.exception.message.LocalDatesTimeExceptionMessage;
+import store.exception.message.LocalDateTimesExceptionMessage;
 
 public class LocalDateTimes {
     public static LocalDateTime of(String stringDate) {
         if (stringDate == null) {
-            throw new LocalDateTimesException(LocalDatesTimeExceptionMessage.DATE_NULL);
+            throw new LocalDateTimesException(LocalDateTimesExceptionMessage.DATE_NULL);
         }
 
         if (stringDate.contains("T")) {
@@ -17,7 +17,7 @@ public class LocalDateTimes {
 
         String[] tokens = stringDate.split("-");
         if (tokens.length != 3) {
-            throw new LocalDateTimesException(LocalDatesTimeExceptionMessage.DATE_FORMAT_ERROR);
+            throw new LocalDateTimesException(LocalDateTimesExceptionMessage.DATE_FORMAT_ERROR);
         }
 
         try {
@@ -26,7 +26,7 @@ public class LocalDateTimes {
             int day = Integer.parseInt(tokens[2]);
             return DateTimes.now().withYear(year).withMonth(month).withDayOfMonth(day);
         } catch (NumberFormatException error) {
-            throw new LocalDateTimesException(LocalDatesTimeExceptionMessage.DATE_FORMAT_ERROR, error);
+            throw new LocalDateTimesException(LocalDateTimesExceptionMessage.DATE_FORMAT_ERROR, error);
         }
 
     }
