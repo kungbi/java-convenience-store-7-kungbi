@@ -19,7 +19,7 @@ class BasicMembershipTest {
         int price = basicMembership.calculateDiscountedPrice(originalPrice);
 
         // then
-        assertEquals(7_000, price);
+        assertEquals(3_000, price);
     }
 
     @Test
@@ -32,7 +32,7 @@ class BasicMembershipTest {
         int price = basicMembership.calculateDiscountedPrice(originalPrice);
 
         // then
-        assertEquals(92_000, price);
+        assertEquals(8_000, price);
     }
 
     @Test
@@ -45,7 +45,7 @@ class BasicMembershipTest {
         int price = basicMembership.calculateDiscountedPrice(originalPrice); // 할인금액 3000.3 -> 3000 (버림)
 
         // then
-        assertEquals(7_001, price);
+        assertEquals(3_000, price);
     }
 
     @Test
@@ -58,7 +58,7 @@ class BasicMembershipTest {
         int price = basicMembership.calculateDiscountedPrice(originalPrice); // 할인금액 3000.9 -> 3000 (버림)
 
         // then
-        assertEquals(7_003, price);
+        assertEquals(3_000, price);
     }
 
     @Test

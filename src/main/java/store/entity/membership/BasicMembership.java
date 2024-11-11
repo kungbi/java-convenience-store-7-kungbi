@@ -14,7 +14,8 @@ public class BasicMembership implements Membership {
         }
 
         try {
-            return Math.floorDiv(originalPrice * Configuration.MEMBERSHIP_DISCOUNT_RATE.getInt(), 100);
+            int discountAmount = Math.floorDiv(originalPrice * Configuration.MEMBERSHIP_DISCOUNT_RATE.getInt(), 100);
+            return Math.min(Configuration.MEMBERSHIP_DISCOUNT_MAX_AMOUNT.getInt(), discountAmount);
         } catch (ArithmeticException error) {
             throw new MembershipException(MembershipExceptionMessage.DIVIDE_BY_ZERO, error);
         }
