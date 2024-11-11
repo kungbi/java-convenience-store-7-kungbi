@@ -1,11 +1,10 @@
 package store.entity.membership;
 
+import store.Configuration;
 import store.exception.MembershipException;
 import store.exception.message.MembershipExceptionMessage;
 
 public class BasicMembership implements Membership {
-    private static final int DISCOUNT_RATE = 30;
-    private static final int MAZ_DISCOUNT_AMOUNT = 8_000;
 
 
     @Override
@@ -15,8 +14,8 @@ public class BasicMembership implements Membership {
         }
 
         try {
-            int discountAmount = Math.floorDiv(originalPrice * DISCOUNT_RATE, 100);
-            return originalPrice - Math.min(discountAmount, MAZ_DISCOUNT_AMOUNT);
+            int discountAmount = Math.floorDiv(originalPrice * Configuration.MEMBERSHIP_DISCOUNT_RATE.getInt(), 100);
+            return originalPrice - Math.min(discountAmount, Configuration.MEMBERSHIP_DISCOUNT_MAX_AMOUNT.getInt());
         } catch (ArithmeticException error) {
             throw new MembershipException(MembershipExceptionMessage.DIVIDE_BY_ZERO, error);
         }

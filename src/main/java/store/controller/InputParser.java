@@ -10,6 +10,8 @@ import store.exception.message.InputParserExceptionMessage;
 
 public class InputParser {
     public static final String PRODUCT_QUANTITY_REGEX = "\\[(.+)-(.+)\\]"; // e.g. [사이다-3]
+    public static final String YES = "Y";
+    public static final String NO = "N";
     static Pattern pattern;
 
     public static List<ItemDto> parseItems(String input) {
@@ -25,9 +27,9 @@ public class InputParser {
 
     public static boolean parseYesOrNo(String input) {
         validate(input);
-        if (input.strip().equals("Y")) {
+        if (input.strip().equals(YES)) {
             return true;
-        } else if (input.strip().equals("N")) {
+        } else if (input.strip().equals(NO)) {
             return false;
         }
         throw new InputParserException(InputParserExceptionMessage.INVALID_FORMAT);

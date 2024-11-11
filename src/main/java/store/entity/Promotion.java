@@ -1,6 +1,7 @@
 package store.entity;
 
 import java.time.LocalDateTime;
+import store.Configuration;
 import store.exception.PromotionException;
 import store.exception.message.PromotionExceptionMessage;
 import store.utils.Date.LocalDateTimes;
@@ -78,7 +79,7 @@ public class Promotion {
         if (name.isBlank()) {
             throw new PromotionException(PromotionExceptionMessage.EMPTY_NAME);
         }
-        if (name.length() > 50) {
+        if (name.length() > Configuration.MAX_PROMOTION_NAME_LENGTH.getInt()) {
             throw new PromotionException(PromotionExceptionMessage.EXCEED_NAME_LENGTH);
         }
     }
@@ -93,10 +94,10 @@ public class Promotion {
     }
 
     private void validateQuantities(int buyQuantity, int freeQuantity) {
-        if (buyQuantity < 1) {
+        if (buyQuantity < Configuration.PROMOTION_BUY_QUANTITY_MIN.getInt()) {
             throw new PromotionException(PromotionExceptionMessage.BUY_QUANTITY_MIN);
         }
-        if (freeQuantity < 1) {
+        if (freeQuantity < Configuration.PROMOTION_FREE_QUANTITY_MIN.getInt()) {
             throw new PromotionException(PromotionExceptionMessage.FREE_QUANTITY_MIN);
         }
     }
