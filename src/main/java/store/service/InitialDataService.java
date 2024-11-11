@@ -3,6 +3,7 @@ package store.service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import store.Configuration;
 import store.entity.ProductStock;
 import store.entity.Promotion;
 import store.entity.PromotionManagement;
@@ -18,18 +19,20 @@ import store.utils.parser.PromotionParser;
 
 public class InitialDataService {
 
+    public static final String ERROR_WHILE_INITIALIZING_DATA = "Error while initializing data";
+
     public static void init(ProductStock productStock, PromotionManagement promotionManagement) {
         try {
             loadPromotions(promotionManagement);
             loadProducts(productStock, promotionManagement);
             addMissingCommonProducts(productStock);
         } catch (IOException error) {
-            throw new IllegalArgumentException("Error while initializing data", error);
+            throw new IllegalArgumentException(ERROR_WHILE_INITIALIZING_DATA, error);
         }
     }
 
     private static void loadPromotions(PromotionManagement promotionManagement) throws IOException {
-        BufferedReader reader = createBufferedReader("promotions.md");
+        BufferedReader reader = createBufferedReader(Configuration.PROMOTION_DATA_FILE.getString());
         PromotionParser parser = new PromotionParser(new CsvReader(reader, true));
 
         PromotionFieldsDto fields;
@@ -40,7 +43,7 @@ public class InitialDataService {
 
     private static void loadProducts(ProductStock productStock, PromotionManagement promotionManagement)
             throws IOException {
-        BufferedReader reader = createBufferedReader("products.md");
+        BufferedReader reader = createBufferedReader(Configuration.PRODUCT_DATA_FILE.getString());
         ProductParser parser = new ProductParser(new CsvReader(reader, true));
 
         ProductFieldsDto fields;

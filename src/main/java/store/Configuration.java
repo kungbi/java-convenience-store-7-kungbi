@@ -8,7 +8,10 @@ public enum Configuration {
     PROMOTION_FREE_QUANTITY_MIN(1),
 
     MEMBERSHIP_DISCOUNT_RATE(30),
-    MEMBERSHIP_DISCOUNT_MAX_AMOUNT(8000);
+    MEMBERSHIP_DISCOUNT_MAX_AMOUNT(8000),
+
+    PRODUCT_DATA_FILE("products.md"),
+    PROMOTION_DATA_FILE("promotions.md");
 
     private final Object value;
 
