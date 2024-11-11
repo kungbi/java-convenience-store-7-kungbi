@@ -68,10 +68,14 @@ public class ProductStock {
 
     public void reduceProductQuantity(String name, int quantity) {
         validateReduceRequest(name, quantity);
-        Map<ProductType, Product> productTypes = products.get(name);
+        Map<ProductType, Product> products = this.products.get(name);
 
-        int remainingQuantity = reducePromotionStock(productTypes, quantity);
-        reduceCommonStock(productTypes, remainingQuantity);
+        int remainingQuantity = quantity;
+        if (products.containsKey(ProductType.PROMOTION)) {
+            PromotionProduct promotionProduct = (PromotionProduct) products.get(ProductType.PROMOTION);
+            remainingQuantity = reducePromotionStock(promotionProduct, quantity);
+        }
+        reduceCommonStock(products, remainingQuantity);
     }
 
     // Private helper methods
@@ -106,20 +110,14 @@ public class ProductStock {
         }
     }
 
-    private int reducePromotionStock(Map<ProductType, Product> productTypes, int quantity) {
-        if (!productTypes.containsKey(ProductType.PROMOTION)) {
+    private int reducePromotionStock(PromotionProduct promotionProduct, int quantity) {
+        if (!promotionProduct.isAvailable()) {
             return quantity;
         }
 
-        PromotionProduct promoProduct = (PromotionProduct) productTypes.get(ProductType.PROMOTION);
-        if (!promoProduct.isAvailable()) {
-            return quantity;
-        }
-
-        int promoStock = stocks.getOrDefault(promoProduct.getUuid(), 0);
+        int promoStock = stocks.getOrDefault(promotionProduct.getUuid(), 0);
         int usedQuantity = Math.min(promoStock, quantity);
-        stocks.put(promoProduct.getUuid(), promoStock - usedQuantity);
-
+        stocks.put(promotionProduct.getUuid(), promoStock - usedQuantity);
         return quantity - usedQuantity;
     }
 
