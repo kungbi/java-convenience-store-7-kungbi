@@ -38,32 +38,9 @@ public class StoreController {
     public void run() {
         while (true) {
             try {
-                consoleOutput.printWelcomeMessage();
-                consoleOutput.printProductList(productStockService.getProductsInformation());
-
-                List<ItemDto> purchaseItems = inputRetryUtil.getPurchaseItems();
-
-                for (ItemDto item : promotionService.findAdditionalFreeItems(new PurchaseItemsDto(purchaseItems))
-                        .products()) {
-                    String answer = inputRetryUtil.askForAdditionalPromotion(item.name());
-                    if (answer.equals("Y")) {
-                        purchaseItems = this.editItemDtos(purchaseItems, item.name(), item.quantity());
-                    }
-                }
-
-                for (ItemDto item : promotionService.findExcludedPromotionItems(new PurchaseItemsDto(purchaseItems))
-                        .items()) {
-                    String answer = inputRetryUtil.askForFullPricePurchase(item.name(), item.quantity());
-                }
-
-                PurchaseResultDto purchase = purchaseService.purchase(new PurchaseRequestDto(
-                        purchaseItems, false
-                ));
-
-                consoleOutput.printPurchaseSummary(purchase);
-
-                String answer = inputRetryUtil.askForAdditionalPurchase();
-                if (answer.equals("N")) {
+                startPurchaseProcess();
+                boolean answer = inputRetryUtil.askForAdditionalPurchase();
+                if (!answer) {
                     break;
                 }
             } catch (IllegalArgumentException error) {
@@ -72,17 +49,47 @@ public class StoreController {
         }
     }
 
-    private List<ItemDto> editItemDtos(List<ItemDto> itemDtos, String name, int quantity) {
-        List<ItemDto> newItems = new ArrayList<>();
+    private void startPurchaseProcess() {
+        consoleOutput.printWelcomeMessage();
+        consoleOutput.printProductList(productStockService.getProductsInformation());
+
+        List<ItemDto> purchaseItems = inputRetryUtil.getPurchaseItems();
+        purchaseItems = applyAdditionalPromotions(purchaseItems);
+        applyExcludedPromotions(purchaseItems);
+        boolean membership = inputRetryUtil.askForMembershipDiscount();
+
+        PurchaseResultDto purchaseResult = purchaseService.purchase(new PurchaseRequestDto(purchaseItems, false));
+        consoleOutput.printPurchaseSummary(purchaseResult);
+    }
+
+    private List<ItemDto> applyAdditionalPromotions(List<ItemDto> purchaseItems) {
+        List<ItemDto> updatedItems = new ArrayList<>(purchaseItems);
+
+        for (ItemDto item : promotionService.findAdditionalFreeItems(new PurchaseItemsDto(purchaseItems)).products()) {
+            boolean answer = inputRetryUtil.askForAdditionalPromotion(item.name());
+            if (answer) {
+                updatedItems = updateItemQuantity(updatedItems, item.name(), item.quantity());
+            }
+        }
+        return updatedItems;
+    }
+
+    private void applyExcludedPromotions(List<ItemDto> purchaseItems) {
+        for (ItemDto item : promotionService.findExcludedPromotionItems(new PurchaseItemsDto(purchaseItems)).items()) {
+            boolean answer = inputRetryUtil.askForFullPricePurchase(item.name(), item.quantity());
+        }
+    }
+
+    private List<ItemDto> updateItemQuantity(List<ItemDto> itemDtos, String name, int additionalQuantity) {
+        List<ItemDto> updatedItems = new ArrayList<>();
 
         for (ItemDto itemDto : itemDtos) {
             if (itemDto.name().equals(name)) {
-                newItems.add(new ItemDto(name, itemDto.quantity() + quantity));
-            }
-            if (!itemDto.name().equals(name)) {
-                newItems.add(itemDto);
+                updatedItems.add(new ItemDto(name, itemDto.quantity() + additionalQuantity));
+            } else {
+                updatedItems.add(itemDto);
             }
         }
-        return newItems;
+        return updatedItems;
     }
 }

@@ -23,6 +23,16 @@ public class InputParser {
         return parseSingleInteger(input);
     }
 
+    public static boolean parseYesOrNo(String input) {
+        validate(input);
+        if (input.strip().equals("Y")) {
+            return true;
+        } else if (input.strip().equals("N")) {
+            return false;
+        }
+        throw new InputParserException(InputParserExceptionMessage.INVALID_FORMAT);
+    }
+
     // private methods
 
     private static List<ItemDto> parseToItems(String input) {

@@ -37,24 +37,24 @@ public class InputRetryUtil {
                 });
     }
 
-    public String askForAdditionalPromotion(String productName) {
-        return readValidatedInput(() -> consoleInput.askForAdditionalPromotion(productName), (context) -> context,
-                InputParserValidator::yesOrNoValidate);
+    public boolean askForAdditionalPromotion(String productName) {
+        return readValidatedInput(() -> consoleInput.askForAdditionalPromotion(productName), InputParser::parseYesOrNo,
+                input -> {});
     }
 
-    public String askForFullPricePurchase(String productName, int quantity) {
+    public boolean askForFullPricePurchase(String productName, int quantity) {
         return readValidatedInput(() -> consoleInput.askForFullPricePurchase(productName, quantity),
-                (context) -> context, InputParserValidator::yesOrNoValidate);
+                InputParser::parseYesOrNo, input -> {});
     }
 
-    public String askForMembershipDiscount() {
-        return readValidatedInput(consoleInput::askForMembershipDiscount, (context) -> context,
-                InputParserValidator::yesOrNoValidate);
+    public boolean askForMembershipDiscount() {
+        return readValidatedInput(consoleInput::askForMembershipDiscount, InputParser::parseYesOrNo,
+                input -> {});
     }
 
-    public String askForAdditionalPurchase() {
-        return readValidatedInput(consoleInput::askForAdditionalPurchase, (context) -> context,
-                InputParserValidator::yesOrNoValidate);
+    public boolean askForAdditionalPurchase() {
+        return readValidatedInput(consoleInput::askForAdditionalPurchase, InputParser::parseYesOrNo,
+                input -> {});
     }
 
     // private methods
