@@ -17,7 +17,11 @@ public class InputParser {
     public static List<ItemDto> parseItems(String input) {
         validate(input);
         compilePattern();
-        return parseToItems(input);
+        List<ItemDto> itemDtos = parseToItems(input);
+        if (itemDtos.isEmpty()) {
+            throw new InputParserException(InputParserExceptionMessage.INVALID_FORMAT);
+        }
+        return itemDtos;
     }
 
     public static int parseInteger(String input) {
@@ -32,7 +36,7 @@ public class InputParser {
         } else if (input.strip().equals(NO)) {
             return false;
         }
-        throw new InputParserException(InputParserExceptionMessage.INVALID_FORMAT);
+        throw new InputParserException(InputParserExceptionMessage.ETC_EXCEPTION);
     }
 
     // private methods

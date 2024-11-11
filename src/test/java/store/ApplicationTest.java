@@ -101,6 +101,13 @@ class ApplicationTest extends NsTest {
         });
     }
 
+    @Test
+    void 정상__멤버십_할인() {
+        assertSimpleTest(() -> {
+            run("[사이다-3]", "Y", "Y");
+        });
+    }
+
     @Override
     public void runMain() {
         Application.main(new String[]{});

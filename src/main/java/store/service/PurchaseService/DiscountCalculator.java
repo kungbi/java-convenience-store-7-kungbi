@@ -20,7 +20,7 @@ public class DiscountCalculator {
     public int calculateMembershipDiscountAmount(PurchaseRequestDto purchaseInputDto, int totalAmount) {
         int membershipDiscountAmount = 0;
         if (purchaseInputDto.isMembership()) {
-            membershipDiscountAmount = membership.applyDiscount(totalAmount);
+            membershipDiscountAmount = membership.calculateDiscountedPrice(totalAmount);
         }
         return membershipDiscountAmount;
     }

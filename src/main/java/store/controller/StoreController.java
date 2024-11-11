@@ -49,6 +49,7 @@ public class StoreController {
                 return true;
             }
         } catch (IllegalArgumentException error) {
+            error.printStackTrace();
             consoleOutput.printException(error);
         }
         return false;

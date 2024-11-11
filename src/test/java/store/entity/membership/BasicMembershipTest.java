@@ -16,7 +16,7 @@ class BasicMembershipTest {
         BasicMembership basicMembership = new BasicMembership();
 
         // when
-        int price = basicMembership.applyDiscount(originalPrice);
+        int price = basicMembership.calculateDiscountedPrice(originalPrice);
 
         // then
         assertEquals(7_000, price);
@@ -29,7 +29,7 @@ class BasicMembershipTest {
         BasicMembership basicMembership = new BasicMembership();
 
         // when
-        int price = basicMembership.applyDiscount(originalPrice);
+        int price = basicMembership.calculateDiscountedPrice(originalPrice);
 
         // then
         assertEquals(92_000, price);
@@ -42,7 +42,7 @@ class BasicMembershipTest {
         BasicMembership basicMembership = new BasicMembership();
 
         // when
-        int price = basicMembership.applyDiscount(originalPrice); // 할인금액 3000.3 -> 3000 (버림)
+        int price = basicMembership.calculateDiscountedPrice(originalPrice); // 할인금액 3000.3 -> 3000 (버림)
 
         // then
         assertEquals(7_001, price);
@@ -55,7 +55,7 @@ class BasicMembershipTest {
         BasicMembership basicMembership = new BasicMembership();
 
         // when
-        int price = basicMembership.applyDiscount(originalPrice); // 할인금액 3000.9 -> 3000 (버림)
+        int price = basicMembership.calculateDiscountedPrice(originalPrice); // 할인금액 3000.9 -> 3000 (버림)
 
         // then
         assertEquals(7_003, price);
@@ -69,7 +69,7 @@ class BasicMembershipTest {
 
         // when & then
         MembershipException exception = assertThrows(MembershipException.class, () -> {
-            basicMembership.applyDiscount(originalPrice);
+            basicMembership.calculateDiscountedPrice(originalPrice);
         });
 
         assertEquals(MembershipExceptionMessage.INVALID_PRICE.getMessage(), exception.getMessage());
