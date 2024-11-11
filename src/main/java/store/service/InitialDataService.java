@@ -18,10 +18,14 @@ import store.utils.parser.PromotionParser;
 
 public class InitialDataService {
 
-    public static void init(ProductStock productStock, PromotionManagement promotionManagement) throws IOException {
-        loadPromotions(promotionManagement);
-        loadProducts(productStock, promotionManagement);
-        addMissingCommonProducts(productStock);
+    public static void init(ProductStock productStock, PromotionManagement promotionManagement) {
+        try {
+            loadPromotions(promotionManagement);
+            loadProducts(productStock, promotionManagement);
+            addMissingCommonProducts(productStock);
+        } catch (IOException error) {
+            throw new IllegalArgumentException("Error while initializing data", error);
+        }
     }
 
     private static void loadPromotions(PromotionManagement promotionManagement) throws IOException {

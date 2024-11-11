@@ -1,6 +1,5 @@
 package store;
 
-import java.io.IOException;
 import store.controller.InputRetryUtil;
 import store.controller.StoreController;
 import store.entity.ProductStock;
@@ -15,35 +14,28 @@ import store.view.ConsoleOutput;
 
 public class Application {
     public static void main(String[] args) {
+        StoreController storeController = configureDependencies();
+        storeController.run();
+    }
+
+    private static StoreController configureDependencies() {
         ProductStock productStock = new ProductStock();
-        PromotionManagement promotionManagement = new PromotionManagement();
         ConsoleInput consoleInput = new ConsoleInput();
         ConsoleOutput consoleOutput = new ConsoleOutput();
-
-        try {
-            InitialDataService.init(productStock, promotionManagement);
-        } catch (IOException error) {
-            System.err.println("Error while initializing data: " + error.getMessage());
-            error.printStackTrace();  // 추가: 예외 내용을 출력합니다.
-            throw new RuntimeException("Error while initializing data", error);
-        }
-
+        InitialDataService.init(productStock, new PromotionManagement());
         ProductStockService productStockService = new ProductStockService(productStock);
         PromotionService promotionService = new PromotionService(productStock);
-        BasicMembership basicMembership = new BasicMembership();
-        PurchaseService purchaseService = new PurchaseService(productStockService, promotionService, basicMembership);
-        InputRetryUtil inputRetryUtil = new InputRetryUtil(consoleInput, consoleOutput, productStockService);
 
-        StoreController storeController = new StoreController(
-                consoleInput,
-                consoleOutput,
-                productStockService,
-                promotionService,
-                purchaseService,
-                inputRetryUtil
-        );
+        return createController(consoleInput, consoleOutput, productStockService, promotionService,
+                new PurchaseService(productStockService, promotionService, new BasicMembership()),
+                new InputRetryUtil(consoleInput, consoleOutput, productStockService));
+    }
 
-        storeController.run();
-
+    private static StoreController createController(ConsoleInput consoleInput, ConsoleOutput consoleOutput,
+                                                    ProductStockService productStockService,
+                                                    PromotionService promotionService, PurchaseService purchaseService,
+                                                    InputRetryUtil inputRetryUtil) {
+        return new StoreController(consoleInput, consoleOutput, productStockService, promotionService, purchaseService,
+                inputRetryUtil);
     }
 }
