@@ -11,7 +11,9 @@ public enum DtoExceptionMessage implements ExceptionMessage {
     TOTAL_PRICE_LESS_THAN_ZERO("총 가격이 0보다 작습니다."),
     PROMOTION_DISCOUNT_LESS_THAN_ZERO("프로모션 할인액이 0보다 작습니다."),
     MEMBERSHIP_DISCOUNT_LESS_THAN_ZERO("멤버십 할인액이 0보다 작습니다."),
-    PAYMENT_AMOUNT_LESS_THAN_ZERO("결제 금액이 0보다 작습니다.")
+    PAYMENT_AMOUNT_LESS_THAN_ZERO("결제 금액이 0보다 작습니다."),
+    START_DATE_NULL("시작 날짜가 NULL 입니다."),
+    END_DATE_NULL("종료 날짜가 NULL 입니다."),
     ;
 
     private final String message;

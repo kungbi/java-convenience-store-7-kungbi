@@ -2,6 +2,7 @@ package store.utils.parser;
 
 import java.io.IOException;
 import java.util.List;
+import store.controller.InputParser;
 import store.utils.Date.LocalDateTimes;
 
 public class PromotionParser {
@@ -18,15 +19,8 @@ public class PromotionParser {
             return null;
         }
 
-        return new PromotionFieldsDto(fields.get(0), getParseInt(fields.get(1)), getParseInt(fields.get(2)),
+        return new PromotionFieldsDto(fields.get(0), InputParser.parseInteger(fields.get(1)),
+                InputParser.parseInteger(fields.get(2)),
                 LocalDateTimes.of(fields.get(3)), LocalDateTimes.of(fields.get(4)));
-    }
-
-    private int getParseInt(String field) {
-        try {
-            return Integer.parseInt(field);
-        } catch (NumberFormatException error) {
-            throw new IllegalArgumentException("Invalid promotion data", error);
-        }
     }
 }

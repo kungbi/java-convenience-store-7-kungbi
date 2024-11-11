@@ -14,9 +14,6 @@ public record ProductInfoDto(String name, int price, int quantity, String promot
         if (quantity < 0) {
             throw new DtoException(DtoExceptionMessage.ITEM_QUANTITY_LESS_THAN_ZERO);
         }
-        if (promotion == null || promotion.isBlank()) {
-            throw new DtoException(DtoExceptionMessage.ITEM_PROMOTION_NULL_OR_BLANK);
-        }
     }
 
 }

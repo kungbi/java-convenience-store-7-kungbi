@@ -55,7 +55,7 @@ class LocalDateTimesTest {
         String stringDate = null;
 
         // when
-        DateTimeException exception = Assertions.assertThrows(DateTimeException.class,
+        DateTimeException exception = Assertions.assertThrows(DatesT,
                 () -> LocalDateTimes.of(stringDate));
 
         // then

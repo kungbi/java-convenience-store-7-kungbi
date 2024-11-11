@@ -2,6 +2,7 @@ package store.utils.parser;
 
 import java.io.IOException;
 import java.util.List;
+import store.controller.InputParser;
 
 public class ProductParser {
     private final Reader reader;
@@ -22,8 +23,8 @@ public class ProductParser {
         }
 
         String name = fields.get(0);
-        int price = getParseInt(fields.get(1));
-        int stock = getParseInt(fields.get(2));
+        int price = InputParser.parseInteger(fields.get(1));
+        int stock = InputParser.parseInteger(fields.get(2));
         String promotionName = fields.get(3);
 
         if (promotionName.equals("null")) {
@@ -33,11 +34,4 @@ public class ProductParser {
         return new ProductFieldsDto(name, price, stock, promotionName);
     }
 
-    private int getParseInt(String fields) {
-        try {
-            return Integer.parseInt(fields);
-        } catch (NumberFormatException error) {
-            throw new IllegalArgumentException("Invalid product data", error);
-        }
-    }
 }

@@ -3,20 +3,22 @@ package store.utils.parser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
+import store.exception.ReaderException;
+import store.exception.message.ReaderExceptionMessage;
 
 public class CsvReader implements Reader {
     private final BufferedReader reader;
 
     public CsvReader(BufferedReader reader, boolean header) {
         if (reader == null) {
-            throw new IllegalArgumentException("Reader cannot be null");
+            throw new ReaderException(ReaderExceptionMessage.BUFFERED_READER_NULL);
         }
         this.reader = reader;
         if (header) {
             try {
                 this.reader.readLine();
-            } catch (IOException e) {
-                throw new IllegalArgumentException("Cannot read header");
+            } catch (IOException error) {
+                throw new ReaderException(ReaderExceptionMessage.READ_LINE_FAILED, error);
             }
         }
     }
