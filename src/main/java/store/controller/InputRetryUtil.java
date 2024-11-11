@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import store.dto.ItemDto;
 import store.dto.PurchaseItemsDto;
-import store.service.ProductStockService;
+import store.service.ProductStockService.ProductStockService;
 import store.validator.InputParserValidator;
 import store.view.ConsoleInput;
 import store.view.ConsoleOutput;

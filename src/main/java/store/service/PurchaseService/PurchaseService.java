@@ -9,7 +9,7 @@ import store.dto.PurchaseResultDto;
 import store.dto.PurchaseResultItemDto;
 import store.entity.membership.Membership;
 import store.entity.product.ProductType;
-import store.service.ProductStockService;
+import store.service.ProductStockService.ProductStockService;
 import store.service.PromotionService.PromotionService;
 
 public class PurchaseService {

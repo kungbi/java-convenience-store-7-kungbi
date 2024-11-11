@@ -18,6 +18,7 @@ import store.entity.membership.BasicMembership;
 import store.entity.product.CommonProduct;
 import store.entity.product.ProductType;
 import store.entity.product.PromotionProduct;
+import store.service.ProductStockService.ProductStockService;
 import store.service.PromotionService.PromotionService;
 import store.service.PurchaseService.PurchaseService;
 import store.utils.Date.LocalDateTimes;

@@ -6,7 +6,7 @@ import store.dto.ItemDto;
 import store.dto.PurchaseItemsDto;
 import store.dto.PurchaseRequestDto;
 import store.dto.PurchaseResultDto;
-import store.service.ProductStockService;
+import store.service.ProductStockService.ProductStockService;
 import store.service.PromotionService.PromotionService;
 import store.service.PurchaseService.PurchaseService;
 import store.view.ConsoleInput;

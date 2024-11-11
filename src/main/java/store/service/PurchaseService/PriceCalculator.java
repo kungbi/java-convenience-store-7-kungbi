@@ -5,7 +5,7 @@ import store.dto.ItemDto;
 import store.entity.product.Product;
 import store.entity.product.ProductType;
 import store.entity.product.PromotionProduct;
-import store.service.ProductStockService;
+import store.service.ProductStockService.ProductStockService;
 
 public class PriceCalculator {
     private final ProductStockService productStockService;

@@ -5,7 +5,7 @@ import store.dto.ItemDto;
 import store.dto.PurchaseRequestDto;
 import store.entity.membership.Membership;
 import store.entity.product.ProductType;
-import store.service.ProductStockService;
+import store.service.ProductStockService.ProductStockService;
 
 public class DiscountCalculator {
     private final Membership membership;
