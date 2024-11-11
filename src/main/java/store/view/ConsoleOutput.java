@@ -48,7 +48,7 @@ public class ConsoleOutput {
             String itemName = item.name();
             int quantity = item.quantity();
             int itemPrice = item.price();
-            System.out.printf("%-10s %10d %15s\n", itemName, quantity, itemPrice);
+            System.out.printf("%-10s %10d %15s\n", itemName, quantity, currencyFormat.format(itemPrice));
         }
 
         System.out.println("===============증 정=================");

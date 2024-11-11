@@ -1,6 +1,5 @@
 package store.service;
 
-import camp.nextstep.edu.missionutils.DateTimes;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
@@ -61,6 +60,13 @@ class PromotionServiceTest {
                             )),
                             new AdditionalFreeItemsDto(List.of(
                             ))
+                    ),
+                    Arguments.of(
+                            new PurchaseItemsDto(List.of(
+                                    new ItemDto("바나나", 10)
+                            )),
+                            new AdditionalFreeItemsDto(List.of(
+                            ))
                     )
             );
         }
@@ -74,21 +80,24 @@ class PromotionServiceTest {
                     new Promotion("프로모션", 1, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 3);
             productStock.addProduct(new PromotionProduct("펩시", 1000,
-                    new Promotion("프로모션", 1, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
+                    new Promotion("프로모션2", 1, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 3);
             productStock.addProduct(new CommonProduct("밀키스", 1000), 10);
             productStock.addProduct(new PromotionProduct("밀키스", 1000,
-                    new Promotion("프로모션", 1, 1, LocalDateTimes.now().minusDays(2), LocalDateTimes.now().minusDays(1)
+                    new Promotion("프로모션3", 1, 1, LocalDateTimes.now().minusDays(2), LocalDateTimes.now().minusDays(1)
                     )), 3);
             productStock.addProduct(new PromotionProduct("카스", 1000,
-                    new Promotion("프로모션", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
+                    new Promotion("프로모션4", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 6);
             productStock.addProduct(new PromotionProduct("테라", 1000,
-                    new Promotion("프로모션", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
+                    new Promotion("프로모션5", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 5);
             productStock.addProduct(new PromotionProduct("과자", 1000,
-                    new Promotion("프로모션", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
+                    new Promotion("프로모션6", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 8);
+            productStock.addProduct(new PromotionProduct("바나나", 1000,
+                    new Promotion("프로모션7", 1, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
+                    )), 10);
         }
 
         @ParameterizedTest
@@ -110,7 +119,6 @@ class PromotionServiceTest {
 
     }
 
-
     @Nested
     class 기능_calculateFreeCount_테스트 {
         ProductStock productStock;
@@ -122,7 +130,8 @@ class PromotionServiceTest {
                     Arguments.of(new ItemDto("펩시", 1), 0),
                     Arguments.of(new ItemDto("밀키스", 2), 0),
                     Arguments.of(new ItemDto("카스", 6), 2),
-                    Arguments.of(new ItemDto("테라", 3), 1)
+                    Arguments.of(new ItemDto("테라", 3), 1),
+                    Arguments.of(new ItemDto("바나나", 5), 0)
             );
         }
 
@@ -147,6 +156,10 @@ class PromotionServiceTest {
             productStock.addProduct(new PromotionProduct("테라", 1000,
                     new Promotion("프로모션", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 5);
+            productStock.addProduct(new CommonProduct("바나나", 1000), 10);
+            productStock.addProduct(new PromotionProduct("바나나", 1000,
+                    new Promotion("프로모션", 2, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
+                    )), 0);
         }
 
         @ParameterizedTest

@@ -74,7 +74,11 @@ public class PromotionService {
             return 0;
         }
 
-        return promotionProduct.getPromotion().calculateFreeCount(purchaseItemDto.quantity());
+        int freeCount = promotionProduct.getPromotion().calculateFreeCount(purchaseItemDto.quantity());
+        if (freeCount > productStock.getProductQuantityByUuid(promotionProduct.getUuid())) {
+            return 0;
+        }
+        return freeCount;
     }
 
     private void findAdditionalFreeItems(ItemDto product, List<ItemDto> freePromotionItems) {
@@ -90,6 +94,10 @@ public class PromotionService {
         }
 
         int additionalFreeItemCount = promotion.getAdditionalFreeItemCount(product.quantity());
+        if (additionalFreeItemCount == 0) {
+            return;
+        }
+
         int productQuantity = productStock.getProductQuantity(product.name(), ProductType.PROMOTION);
         if (product.quantity() + additionalFreeItemCount <= productQuantity) {
             freePromotionItems.add(new ItemDto(product.name(), additionalFreeItemCount));
