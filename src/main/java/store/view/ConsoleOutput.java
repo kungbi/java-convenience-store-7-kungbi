@@ -20,7 +20,8 @@ public class ConsoleOutput {
         System.out.println("현재 보유하고 있는 상품입니다.\n");
         for (ProductInfoDto product : products) {
             StringBuilder output = new StringBuilder();
-            output.append("- ").append(product.name()).append(" ").append(String.format("%,d", product.price())).append("원 ");
+            output.append("- ").append(product.name()).append(" ").append(String.format("%,d", product.price()))
+                    .append("원 ");
 
             if (product.quantity() > 0) {
                 output.append(product.quantity()).append("개");
@@ -34,7 +35,6 @@ public class ConsoleOutput {
 
             System.out.println(output.toString());
         }
-        System.out.println();
     }
 
     // 구매 요약 출력
@@ -59,9 +59,9 @@ public class ConsoleOutput {
         System.out.println("====================================");
         System.out.printf("%-10s %25s\n", "총구매액", currencyFormat.format(purchaseResult.totalAmount()));
         System.out.printf("%-10s %25s\n", "행사할인",
-                "-" + currencyFormat.format(purchaseResult.promotionDiscountAmount()));
+                currencyFormat.format(purchaseResult.promotionDiscountAmount() * -1));
         System.out.printf("%-10s %25s\n", "멤버십할인",
-                "-" + currencyFormat.format(purchaseResult.membershipDiscountAmount()));
+                currencyFormat.format(purchaseResult.membershipDiscountAmount() * -1));
         System.out.printf("%-10s %25s\n", "내실돈", currencyFormat.format(purchaseResult.paymentAmount()));
     }
 
