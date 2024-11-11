@@ -20,57 +20,30 @@ public class ProductStockService {
         this.productStock = productStock;
     }
 
-    /**
-     * 여러 상품의 재고를 검증합니다.
-     *
-     * @param purchaseItemsDto 구매 요청 상품 목록
-     * @throws ProductStockException 재고 부족 또는 존재하지 않는 상품에 대한 예외
-     */
     public void validateStocks(PurchaseItemsDto purchaseItemsDto) {
         for (ItemDto productDto : purchaseItemsDto.products()) {
             validateStock(productDto);
         }
     }
 
-    /**
-     * 여러 상품의 재고를 차감합니다.
-     *
-     * @param purchaseItemsDto 구매 요청 상품 목록
-     * @throws ProductStockException 재고 부족 또는 존재하지 않는 상품에 대한 예외
-     */
     public void reduceStocks(PurchaseItemsDto purchaseItemsDto) {
         for (ItemDto productDto : purchaseItemsDto.products()) {
             reduceStock(productDto);
         }
     }
 
-    /**
-     * 특정 상품의 재고를 검증합니다.
-     *
-     * @param productDto 구매 요청 상품
-     * @throws ProductStockException 재고 부족 또는 존재하지 않는 상품에 대한 예외
-     */
     public void validateStock(ItemDto productDto) {
         if (!productStock.isExistProduct(productDto.name())) {
             throw new ProductStockException(ProductStockExceptionMessage.NOT_EXIST_PRODUCT);
         }
 
-        boolean isPromotionStockValid = validatePromotionStock(productDto);
-        boolean isCommonStockValid = validateCommonStock(productDto);
-
-        if (!isPromotionStockValid && !isCommonStockValid) {
+        if (!isStockAvailable(productDto)) {
             throw new ProductStockException(ProductStockExceptionMessage.INSUFFICIENT_STOCK);
         }
     }
 
-    /**
-     * 특정 상품의 재고를 차감합니다.
-     *
-     * @param productDto 구매 요청 상품
-     * @throws ProductStockException 재고 부족 또는 존재하지 않는 상품에 대한 예외
-     */
     public void reduceStock(ItemDto productDto) {
-        this.validateStock(productDto);
+        validateStock(productDto);
         productStock.reduceProductQuantity(productDto.name(), productDto.quantity());
     }
 
@@ -80,20 +53,8 @@ public class ProductStockService {
 
     public List<ProductInfoDto> getProductsInformation() {
         List<ProductInfoDto> productInfoDtos = new ArrayList<>();
-
-        List<Product> products = productStock.getProducts();
-        for (Product product : products) {
-            int quantity = productStock.getProductQuantityByUuid(product.getUuid());
-            if (product.getType() == ProductType.COMMON) {
-                productInfoDtos.add(new ProductInfoDto(product.getName(), product.getPrice(), quantity, null));
-            }
-
-            if (product.getType() == ProductType.PROMOTION) {
-                Promotion promotion = ((PromotionProduct) productStock.getProduct(product.getName(),
-                        ProductType.PROMOTION)).getPromotion();
-                productInfoDtos.add(new ProductInfoDto(product.getName(), product.getPrice(), quantity,
-                        promotion.getName()));
-            }
+        for (Product product : productStock.getProducts()) {
+            addProductInfoDto(productInfoDtos, product);
         }
         return productInfoDtos;
     }
@@ -106,47 +67,50 @@ public class ProductStockService {
         return productStock.getProductQuantity(name, type);
     }
 
-    // private helper methods
+    // Private helper methods
+
+    private boolean isStockAvailable(ItemDto productDto) {
+        return validatePromotionStock(productDto) || validateCommonStock(productDto);
+    }
 
     private boolean validatePromotionStock(ItemDto productDto) {
         if (!productStock.isExistProductWithType(productDto.name(), ProductType.PROMOTION)) {
             return false;
         }
-
-        if (productStock.getProduct(productDto.name(),
-                ProductType.PROMOTION) instanceof PromotionProduct promotionProduct
-            && !promotionProduct.getPromotion().isAvailable()) {
+        if (!isPromotionAvailable(productDto)) {
             return false;
         }
+        return productStock.isSufficientStock(productDto.name(), ProductType.PROMOTION, productDto.quantity())
+               || isCombinedStockSufficient(productDto);
+    }
 
-        if (productStock.isSufficientStock(productDto.name(), ProductType.PROMOTION, productDto.quantity())) {
-            return true;
-        }
+    private boolean isPromotionAvailable(ItemDto productDto) {
+        Product promotionProduct = productStock.getProduct(productDto.name(), ProductType.PROMOTION);
+        return ((PromotionProduct) promotionProduct).getPromotion().isAvailable();
+    }
 
-        if (!productStock.isExistProductWithType(productDto.name(), ProductType.COMMON)) {
-            return false;
-        }
-
-        if (productStock.getProductQuantity(productDto.name(), ProductType.PROMOTION)
-            + productStock.getProductQuantity(productDto.name(), ProductType.COMMON) >= productDto.quantity()) {
-            return true;
-        }
-
-        if (productStock.isSufficientStock(productDto.name(), ProductType.COMMON, productDto.quantity())) {
-            return true;
-        }
-
-        return false;
+    private boolean isCombinedStockSufficient(ItemDto productDto) {
+        int promotionStock = productStock.getProductQuantity(productDto.name(), ProductType.PROMOTION);
+        int commonStock = productStock.getProductQuantity(productDto.name(), ProductType.COMMON);
+        return promotionStock + commonStock >= productDto.quantity();
     }
 
     private boolean validateCommonStock(ItemDto productDto) {
-        if (!productStock.isExistProductWithType(productDto.name(), ProductType.COMMON)) {
-            return false;
+        return productStock.isExistProductWithType(productDto.name(), ProductType.COMMON)
+               && productStock.isSufficientStock(productDto.name(), ProductType.COMMON, productDto.quantity());
+    }
+
+    private void addProductInfoDto(List<ProductInfoDto> productInfoDtos, Product product) {
+        int quantity = productStock.getProductQuantityByUuid(product.getUuid());
+        String promotionName = getPromotionNameIfApplicable(product);
+        productInfoDtos.add(new ProductInfoDto(product.getName(), product.getPrice(), quantity, promotionName));
+    }
+
+    private String getPromotionNameIfApplicable(Product product) {
+        if (product.getType() == ProductType.PROMOTION) {
+            Promotion promotion = ((PromotionProduct) product).getPromotion();
+            return promotion.getName();
         }
-        if (!productStock.isSufficientStock(productDto.name(), ProductType.COMMON, productDto.quantity())) {
-            return false;
-        }
-        return true;
+        return null;
     }
 }
-

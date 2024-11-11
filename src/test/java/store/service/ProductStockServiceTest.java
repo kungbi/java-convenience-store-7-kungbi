@@ -61,7 +61,7 @@ class ProductStockServiceTest {
 
         static Stream<Arguments> 예외__상품_구매_가능_테스트_케이스() {
             return Stream.of(
-                    //  프로모션 상품 적용이 가능하고, 프로모션 상품만 존재하며, 프로모션 상품의 재고가 부족한 경우
+                    //  프로모션 상품 적용이 가능하고, 프로모션 상품의 재고가 부족한 경우
                     Arguments.of(
                             new PurchaseItemsDto(
                                     List.of(
@@ -109,6 +109,7 @@ class ProductStockServiceTest {
             productStock.addProduct(new PromotionProduct("사이다", 1000,
                     new Promotion("프로모션", 1, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 3);
+            productStock.addProduct(new CommonProduct("펩시", 1000), 0);
             productStock.addProduct(new PromotionProduct("펩시", 1000,
                     new Promotion("프로모션", 1, 1, LocalDateTimes.now(), LocalDateTimes.now().plusDays(1)
                     )), 3);
