@@ -1,8 +1,7 @@
 package store.exception;
 
 public enum IllegalArgumentMessage implements ExceptionMessage {
-
-    ;
+    PRODUCT_DUPLICATE("상품 중복");
 
     private final String message;
 
