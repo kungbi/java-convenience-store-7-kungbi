@@ -5,8 +5,6 @@ import java.util.Optional;
 
 public interface Repository<T> {
 
-    void add(T entity);
-
     void remove(T entity);
 
     int getSize();

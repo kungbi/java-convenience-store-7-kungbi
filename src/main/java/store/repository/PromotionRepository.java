@@ -9,7 +9,6 @@ import store.domain.Promotion;
 public class PromotionRepository implements Repository<Promotion> {
     Map<String, Promotion> promotions = new HashMap<>();
 
-    @Override
     public void add(Promotion entity) {
         if (this.exists(entity.getName())) {
             throw new IllegalArgumentException("Promotion already exists");

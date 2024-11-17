@@ -4,12 +4,12 @@ import store.config.ProductType;
 import store.exception.ProductCreationException;
 
 public class Product {
+    private final int id;
     private final String name;
     private final int price;
     private final ProductType type;
 
-    public Product(String name, int price, ProductType type) {
-        this.type = type;
+    public Product(int id, String name, int price, ProductType type) {
         if (name == null || name.isBlank()) {
             throw new ProductCreationException();
         }
@@ -20,8 +20,14 @@ public class Product {
             throw new ProductCreationException();
         }
 
+        this.id = id;
+        this.type = type;
         this.name = name;
         this.price = price;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {

@@ -12,6 +12,7 @@ import store.exception.ProductRepositoryException;
 
 public class ProductRepository implements Repository<Product> {
     private final Map<String, Map<ProductType, Product>> products = new HashMap<>();
+    private int idCounter;
 
     public Optional<List<Product>> findByName(String name) {
         if (name == null) {
@@ -41,17 +42,13 @@ public class ProductRepository implements Repository<Product> {
         return Optional.of(products.get(name).get(type));
     }
 
-    @Override
-    public void add(Product entity) {
-        if (entity == null) {
-            throw new ProductRepositoryException();
-        }
-        if (existsWithType(entity.getName(), entity.getType())) {
+    public void add(String name, int price, ProductType type) {
+        if (existsWithType(name, type)) {
             throw new ProductRepositoryException(IllegalArgumentMessage.PRODUCT_DUPLICATE);
         }
 
-        products.putIfAbsent(entity.getName(), new HashMap<>());
-        products.get(entity.getName()).put(entity.getType(), entity);
+        products.putIfAbsent(name, new HashMap<>());
+        products.get(name).put(type, new Product(idCounter++, name, price, type));
     }
 
     @Override

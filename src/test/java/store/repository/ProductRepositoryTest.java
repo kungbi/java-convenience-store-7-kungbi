@@ -15,21 +15,34 @@ class ProductRepositoryTest {
         ProductRepository productRepository = new ProductRepository();
 
         // when
-        Product product = new Product("콜라", 1500, ProductType.COMMON);
-        productRepository.add(product);
+        productRepository.add("콜라", 1500, ProductType.COMMON);
 
         // then
         Assertions.assertEquals(1, productRepository.getSize());
     }
 
     @Test
+    void indexText() {
+        // given
+        ProductRepository productRepository = new ProductRepository();
+
+        // when
+        productRepository.add("콜라", 1500, ProductType.COMMON);
+        productRepository.add("바나나", 1500, ProductType.COMMON);
+
+        // then
+        Assertions.assertEquals(0,
+                productRepository.findByNameAndType("콜라", ProductType.COMMON).get().getId());
+        Assertions.assertEquals(1,
+                productRepository.findByNameAndType("바나나", ProductType.COMMON).get().getId());
+    }
+
+    @Test
     void findByName() {
         // given
         ProductRepository productRepository = new ProductRepository();
-        Product commonProduct = new Product("콜라", 2000, ProductType.COMMON);
-        Product promotionProduct = new Product("콜라", 1000, ProductType.PROMOTION);
-        productRepository.add(commonProduct);
-        productRepository.add(promotionProduct);
+        productRepository.add("콜라", 2000, ProductType.COMMON);
+        productRepository.add("콜라", 1000, ProductType.PROMOTION);
 
         // when
         Optional<List<Product>> products = productRepository.findByName("콜라");
@@ -43,30 +56,26 @@ class ProductRepositoryTest {
     void findByNameAndType() {
         // given
         ProductRepository productRepository = new ProductRepository();
-        Product commonProduct = new Product("콜라", 2000, ProductType.COMMON);
-        Product promotionProduct = new Product("콜라", 1000, ProductType.PROMOTION);
-        productRepository.add(commonProduct);
-        productRepository.add(promotionProduct);
+        productRepository.add("콜라", 2000, ProductType.COMMON);
+        productRepository.add("콜라", 1000, ProductType.PROMOTION);
 
         // when
-        Optional<Product> product = productRepository.findByNameAndType(commonProduct.getName(),
+        Optional<Product> product = productRepository.findByNameAndType("콜라",
                 ProductType.COMMON);
 
         // then
         Assertions.assertTrue(product.isPresent());
-        Assertions.assertEquals(commonProduct, product.get());
+        Assertions.assertEquals("콜라", product.get().getName());
+        Assertions.assertEquals(2000, product.get().getPrice());
     }
 
     @Test
     void getSize() {
         // given
         ProductRepository productRepository = new ProductRepository();
-        Product product1 = new Product("콜라", 2000, ProductType.COMMON);
-        Product product2 = new Product("콜라", 1000, ProductType.PROMOTION);
-        Product product3 = new Product("오렌지", 1000, ProductType.COMMON);
-        productRepository.add(product1);
-        productRepository.add(product2);
-        productRepository.add(product3);
+        productRepository.add("콜라", 2000, ProductType.COMMON);
+        productRepository.add("콜라", 1000, ProductType.PROMOTION);
+        productRepository.add("오렌지", 1000, ProductType.COMMON);
 
         // when
         int size = productRepository.getSize();
@@ -79,12 +88,9 @@ class ProductRepositoryTest {
     void findAll() {
         // given
         ProductRepository productRepository = new ProductRepository();
-        Product product1 = new Product("콜라", 2000, ProductType.COMMON);
-        Product product2 = new Product("콜라", 1000, ProductType.PROMOTION);
-        Product product3 = new Product("오렌지", 1000, ProductType.COMMON);
-        productRepository.add(product1);
-        productRepository.add(product2);
-        productRepository.add(product3);
+        productRepository.add("콜라", 2000, ProductType.COMMON);
+        productRepository.add("콜라", 1000, ProductType.PROMOTION);
+        productRepository.add("오렌지", 1000, ProductType.COMMON);
 
         // when
         Optional<List<Product>> products = productRepository.findAll();
