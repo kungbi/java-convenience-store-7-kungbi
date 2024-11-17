@@ -1,5 +1,6 @@
 package store.domain;
 
+import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDateTime;
 
 public class Promotion {
@@ -16,6 +17,30 @@ public class Promotion {
         this.get = get;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public boolean isAvailable() {
+        return startDate.isAfter(DateTimes.now()) && endDate.isBefore(DateTimes.now());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getBuy() {
+        return buy;
+    }
+
+    public int getGet() {
+        return get;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
     }
 
     private void validate(String name, int buy, int get, LocalDateTime startDate, LocalDateTime endDate) {
