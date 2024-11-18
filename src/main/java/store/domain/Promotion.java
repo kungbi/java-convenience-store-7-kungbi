@@ -19,8 +19,14 @@ public class Promotion {
         this.endDate = endDate;
     }
 
-    public boolean isAvailable() {
-        return startDate.isAfter(DateTimes.now()) && endDate.isBefore(DateTimes.now());
+    public boolean hasRequiredPurchaseQuantity(int quantity) {
+        return quantity % (buy + get) == buy;
+    }
+
+    public boolean isDateAvailable() {
+        LocalDateTime now = DateTimes.now();
+        return !now.toLocalDate().isBefore(startDate.toLocalDate()) &&
+               !now.toLocalDate().isAfter(endDate.toLocalDate());
     }
 
     public String getName() {

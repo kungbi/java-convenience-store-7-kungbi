@@ -39,6 +39,13 @@ public class Stock {
         return this.findById(id).isPresent();
     }
 
+    public boolean isSufficient(int id, int quantity) {
+        if (!exists(id)) {
+            throw new IllegalArgumentException();
+        }
+        return stock.get(id) >= quantity;
+    }
+
     private Optional<Integer> findById(int id) {
         Integer quantity = stock.get(id);
         return Optional.ofNullable(quantity);
