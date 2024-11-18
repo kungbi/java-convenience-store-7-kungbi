@@ -23,10 +23,14 @@ public class Promotion {
         return quantity % (buy + get) == buy;
     }
 
+    public int getPromotionAppliedQuantity(int quantity) {
+        return quantity - quantity % (buy + get);
+    }
+
     public boolean isDateAvailable() {
         LocalDateTime now = DateTimes.now();
-        return !now.toLocalDate().isBefore(startDate.toLocalDate()) &&
-               !now.toLocalDate().isAfter(endDate.toLocalDate());
+        return now.toLocalDate().isBefore(startDate.toLocalDate()) ||
+               now.toLocalDate().isAfter(endDate.toLocalDate());
     }
 
     public String getName() {

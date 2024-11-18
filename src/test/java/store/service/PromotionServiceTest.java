@@ -11,6 +11,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import store.config.ProductType;
 import store.domain.Promotion;
 import store.domain.Stock;
+import store.dto.GetExceptPromotionProductsDto.GetExceptPromotionProductsInputDto;
+import store.dto.GetExceptPromotionProductsDto.GetExceptPromotionProductsOutputDto;
 import store.dto.GetExtraFreeProductsDto.GetExtraFreeProductsInputDto;
 import store.dto.GetExtraFreeProductsDto.GetExtraFreeProductsOutputDto;
 import store.dto.ItemDto;
@@ -64,6 +66,52 @@ class PromotionServiceTest {
         );
     }
 
+    static Stream<Arguments> 할인_제외_상품_계산_테스트_케이스() {
+        return Stream.of(
+                Arguments.of(
+                        List.of(
+                                new ItemDto("콜라", 2)
+                        ),
+                        List.of(
+                                new ItemDto("콜라", 2)
+                        )
+                ),
+                Arguments.of(
+                        List.of(
+                                new ItemDto("콜라", 1)
+                        ),
+                        List.of(
+                                new ItemDto("콜라", 1)
+                        )
+                ),
+                Arguments.of(
+                        List.of(
+                                new ItemDto("콜라", 3)
+                        ),
+                        List.of(
+                        )
+                ),
+                Arguments.of(
+                        List.of(
+                                new ItemDto("콜라", 13)
+                        ),
+                        List.of(
+                                new ItemDto("콜라", 7)
+                        )
+                ),
+                Arguments.of(
+                        List.of(
+                                new ItemDto("콜라", 5),
+                                new ItemDto("콜라", 5)
+                        ),
+                        List.of(
+                                new ItemDto("콜라", 4)
+                        )
+                )
+        );
+    }
+
+
     @BeforeEach
     void setUp() {
         PromotionRepository promotionRepository = new PromotionRepository();
@@ -95,6 +143,19 @@ class PromotionServiceTest {
 
         // then
         Assertions.assertEquals(expected, extraFreeProductsOutputDto.additionalProducts());
+    }
+
+    @ParameterizedTest
+    @MethodSource("할인_제외_상품_계산_테스트_케이스")
+    void 할인_제외_상품_계산(List<ItemDto> items, List<ItemDto> expected) {
+        // given
+
+        // when
+        GetExceptPromotionProductsOutputDto exceptPromotionProductsOutputDto = promotionService.getExceptPromotionProductsOutputDto(
+                new GetExceptPromotionProductsInputDto(items));
+
+        // then
+        Assertions.assertEquals(expected, exceptPromotionProductsOutputDto.exceptedItems());
     }
 
 }
